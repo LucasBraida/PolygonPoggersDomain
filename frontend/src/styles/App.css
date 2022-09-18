@@ -81,12 +81,15 @@ header{
 .connect-wallet-container {
   display: flex;
   flex-direction: column;
+  align-items: center;
   margin: auto;
   max-width: 550px;
 }
 
 .connect-wallet-container img {
-  padding-bottom: 20px;
+  padding: 20px;
+  width: 60%;
+  border-radius: 15%;
 }
 
 .connect-wallet-button {
@@ -100,6 +103,7 @@ header{
     #b12a5b 100%
   );
   background-size: 200% 200%;
+  width: 60%;
   animation: gradient-animation 4s ease infinite;
 }
 
