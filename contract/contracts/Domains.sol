@@ -1,15 +1,22 @@
 // SPDX-License-Identifier: UNLICENSED
-
+/*TODO
+- add Ownable openzeppelin
+- setPrice only owner
+- getPrice
+- add registerWithRecord
+- add checkdomainAvailability
+- alter NFT record information to be stat??*/
 pragma solidity ^0.8.10;
 
 // We first import some OpenZeppelin Contracts.
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
-contract Domains is ERC721URIStorage{
+import "@openzeppelin/contracts/access/Ownable.sol";
+contract Domains is ERC721URIStorage, Ownable{
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
-  
+
   string public tld;
   uint256 public price;
 
@@ -115,4 +122,12 @@ contract Domains is ERC721URIStorage{
   function getRecord(string memory name) public view returns(string memory) {
       return records[name];
   }
+
+  function withdraw() public onlyOwner {
+  uint amount = address(this).balance;
+
+  (bool success, ) = msg.sender.call{value: amount}("");
+  require(success, "Failed to withdraw Matic");
+}
+
 }
