@@ -22,15 +22,30 @@ async function main() {
   // let record = await domains.connect(randomPerson).getRecord("Teste");
   // console.log("Teste record is: ",record)
   let URI = await domains.tokenURI(0)
-  console.log(URI)
+  //console.log(URI)
   await domains.setRecord("Teste", "Owners record")
   console.log("/////////////////////////////////////////////////////////")
   URI = await domains.tokenURI(0)
-  console.log(URI)
-  // await domains.connect(randomPerson).register("Teste2")
-  // add = await domains.getAddress("Teste2")
-  // console.log(add)
+  //console.log(URI)
+  try {
+    await domains.connect(randomPerson).register("Teste222222", {value: hre.ethers.utils.parseEther('0.01')})
+    add = await domains.getAddress("Teste222222")
+    console.log(add)
+  } catch (error) {
+    console.log(error)
+  }
+  console.log("/////////////////////////////////////////////////////////")
+  try {
+    await domains.connect(randomPerson).register("Teste");
+  } catch (error) {
+    console.log(error)
+  }
 
+  try {
+    await domains.connect(randomPerson).setRecord("Teste", "My record now");
+  } catch (error) {
+    console.log(error)
+  }
   // //await domains.connect(randomPerson).register("Teste");
   // await domains.connect(randomPerson).setRecord("Teste", "My record now");
 
