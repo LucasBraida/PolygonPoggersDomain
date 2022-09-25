@@ -1,20 +1,43 @@
 import React, { useEffect, useState } from "react";
 import './styles/App.css';
+import LoadingIndicator from "./components/LoadingIndicator";
+import MintsGallery from "./components/MintsGallery/MintsGallery";
 import twitterLogo from './assets/twitter-logo.svg';
 import polygonLogo from './assets/polygonlogo.png';
 import ethLogo from './assets/ethlogo.png';
 import { networks } from './utils/networks';
+import { connectWallet, checkIfWalletIsConnected, checkCurrentNetwork ,handleChangedAccount, handleChangedChain } from './utils'
 import { ethers } from "ethers";
-import { CONTRACT_ADDRESS, contract_abi } from './constants'
+import { CONTRACT_ADDRESS, contract_abi, usedChain, tld } from './constants'
 
 /*TODO
-- revisit CryptoDevsDAO an check account Changed
 -transform wallet handle into a different component
-- alter to have a constant with the used chain and for the intire code to interact with it*/
+- alter css to be responsive and adeuqate to small devices
+*/
 // Constants
 const TWITTER_HANDLE = '_buildspace';
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
-const tld = '.poggers';
+//const tld = '.poggers';
+// const usedChain = {
+// 	chainId: '0x13881',
+// 	chainName: 'Polygon Mumbai Testnet',
+// 	rpcUrls: ['https://rpc-mumbai.maticvigil.com/'],
+// 	nativeCurrency: {
+// 		name: "Mumbai Matic",
+// 		symbol: "MATIC",
+// 		decimals: 18
+// 	},
+// 	blockExplorerUrls: ["https://mumbai.polygonscan.com/"]
+// }
+/*chainId: '0x13881',
+								   chainName: 'Polygon Mumbai Testnet',
+								   rpcUrls: ['https://rpc-mumbai.maticvigil.com/'],
+								   nativeCurrency: {
+									   name: "Mumbai Matic",
+									   symbol: "MATIC",
+									   decimals: 18
+								   },
+								   blockExplorerUrls: ["https://mumbai.polygonscan.com/"] */
 
 const App = () => {
 	const [currentAccount, setCurrentAccount] = useState('');
@@ -25,84 +48,72 @@ const App = () => {
 	const [loading, setLoading] = useState(false);
 	const [mints, setMints] = useState([]);
 
-	const connectWallet = async () => {
-		try {
-			const { ethereum } = window;
+	// const connectWallet = async () => {
+	// 	try {
+	// 		const { ethereum } = window;
 
-			if (!ethereum) {
-				alert("Get MetaMask -> https://metamask.io/");
-				return;
-			}
+	// 		if (!ethereum) {
+	// 			alert("Get MetaMask -> https://metamask.io/");
+	// 			return;
+	// 		}
+	// 		const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+	// 		console.log("Connected", accounts[0]);
+	// 		setCurrentAccount(accounts[0]);
+	// 	} catch (error) {
+	// 		console.log(error)
+	// 	}
+	// }
 
-			// Fancy method to request access to account.
-			const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+	// const checkIfWalletIsConnected = async () => {
+	// 	const { ethereum } = window;
 
-			// Boom! This should print out public address once we authorize Metamask.
-			console.log("Connected", accounts[0]);
-			setCurrentAccount(accounts[0]);
-		} catch (error) {
-			console.log(error)
-		}
-	}
-	const checkIfWalletIsConnected = async () => {
+	// 	if (!ethereum) {
+	// 		alert("Get MetaMask -> https://metamask.io/");
+	// 		return;
+	// 	}
+
+	// 	// Check if we're authorized to access the user's wallet
+	// 	const accounts = await ethereum.request({ method: 'eth_accounts' });
+
+	// 	// Users can have multiple authorized accounts, we grab the first one if its there!
+	// 	if (accounts.length !== 0) {
+	// 		const account = accounts[0];
+	// 		console.log('Found an authorized account:', account);
+	// 		setCurrentAccount(account);
+	// 	} else {
+	// 		console.log('No authorized account found');
+	// 	}
+	// 	const chainId = await ethereum.request({ method: 'eth_chainId' });
+	// 	setNetwork(networks[chainId]);
+
+	// 	ethereum.on('chainChanged', handleChangedEvent);
+	// 	ethereum.on('accountsChanged', handleChangedEvent);
+	// 	// Reload the page when they change networks
+	// 	function handleChangedEvent() {
+	// 		window.location.reload();
+	// 	}
+	// };
+	const switchNetwork = async () => {
 		const { ethereum } = window;
 
 		if (!ethereum) {
-			console.log('Make sure you have metamask!');
+			alert("Get MetaMask -> https://metamask.io/");
 			return;
 		} else {
-			console.log('We have the ethereum object', ethereum);
-		}
-
-		// Check if we're authorized to access the user's wallet
-		const accounts = await ethereum.request({ method: 'eth_accounts' });
-
-		// Users can have multiple authorized accounts, we grab the first one if its there!
-		if (accounts.length !== 0) {
-			const account = accounts[0];
-			console.log('Found an authorized account:', account);
-			setCurrentAccount(account);
-		} else {
-			console.log('No authorized account found');
-		}
-		const chainId = await ethereum.request({ method: 'eth_chainId' });
-		setNetwork(networks[chainId]);
-
-		ethereum.on('chainChanged', handleChangedEvent);
-		ethereum.on('accountsChanged', handleChangedEvent);
-		// Reload the page when they change networks
-		function handleChangedEvent() {
-			window.location.reload();
-		}
-	};
-	const switchNetwork = async () => {
-		if (window.ethereum) {
 			try {
 				// Try to switch to the Mumbai testnet
-				await window.ethereum.request({
+				await ethereum.request({
 					method: 'wallet_switchEthereumChain',
-					params: [{ chainId: '0x13881' }], // Check networks.js for hexadecimal network ids
+					params: [{ chainId: usedChain.chainId }], // Check networks.js for hexadecimal network ids
 				});
 			} catch (error) {
 				// This error code means that the chain we want has not been added to MetaMask
 				// In this case we ask the user to add it to their MetaMask
 				if (error.code === 4902) {
 					try {
-						await window.ethereum.request({
+						await ethereum.request({
 							method: 'wallet_addEthereumChain',
-							params: [
-								{
-									chainId: '0x13881',
-									chainName: 'Polygon Mumbai Testnet',
-									rpcUrls: ['https://rpc-mumbai.maticvigil.com/'],
-									nativeCurrency: {
-										name: "Mumbai Matic",
-										symbol: "MATIC",
-										decimals: 18
-									},
-									blockExplorerUrls: ["https://mumbai.polygonscan.com/"]
-								},
-							],
+							params: [usedChain],
 						});
 					} catch (error) {
 						console.log(error);
@@ -110,10 +121,45 @@ const App = () => {
 				}
 				console.log(error);
 			}
-		} else {
-			// If window.ethereum is not found then MetaMask is not installed
-			alert('MetaMask is not installed. Please install it to use this app: https://metamask.io/download.html');
 		}
+		// if (window.ethereum) {
+		// 	try {
+		// 		// Try to switch to the Mumbai testnet
+		// 		await window.ethereum.request({
+		// 			method: 'wallet_switchEthereumChain',
+		// 			params: [{ chainId: '0x13881' }], // Check networks.js for hexadecimal network ids
+		// 		});
+		// 	} catch (error) {
+		// 		// This error code means that the chain we want has not been added to MetaMask
+		// 		// In this case we ask the user to add it to their MetaMask
+		// 		if (error.code === 4902) {
+		// 			try {
+		// 				await window.ethereum.request({
+		// 					method: 'wallet_addEthereumChain',
+		// 					params: [
+		// 						{
+		// 							chainId: '0x13881',
+		// 							chainName: 'Polygon Mumbai Testnet',
+		// 							rpcUrls: ['https://rpc-mumbai.maticvigil.com/'],
+		// 							nativeCurrency: {
+		// 								name: "Mumbai Matic",
+		// 								symbol: "MATIC",
+		// 								decimals: 18
+		// 							},
+		// 							blockExplorerUrls: ["https://mumbai.polygonscan.com/"]
+		// 						},
+		// 					],
+		// 				});
+		// 			} catch (error) {
+		// 				console.log(error);
+		// 			}
+		// 		}
+		// 		console.log(error);
+		// 	}
+		// } else {
+		// 	// If window.ethereum is not found then MetaMask is not installed
+		// 	alert('MetaMask is not installed. Please install it to use this app: https://metamask.io/download.html');
+		// }
 	}
 	const fetchMints = async () => {
 		try {
@@ -161,9 +207,10 @@ const App = () => {
 				await tx.wait();
 				console.log("Record set https://mumbai.polygonscan.com/tx/" + tx.hash);
 
-				fetchMints();
+				await fetchMints();
 				setRecord('');
 				setDomain('');
+				setEditing(false);
 			}
 		} catch (error) {
 			console.log(error);
@@ -225,15 +272,15 @@ const App = () => {
 			<p>
 				<a className="footer-text" href="https://giphy.com/gifs/wow-wtf-good-WCcdypx0dwswG1Gs95">via GIPHY</a>
 			</p>
-			<img src="https://media3.giphy.com/media/WCcdypx0dwswG1Gs95/giphy.gif?cid=790b7611f99c784cd154379700e1f16ea68f9bf13ab2f2ba&rid=giphy.gif&ct=g" alt="Poggers Gif from GIPHY"></img>
-			<button className="cta-button connect-wallet-button" onClick={connectWallet}>
+			<img src="https://media3.giphy.com/media/WCcdypx0dwswG1Gs95/giphy.gif?cid=&:ref-=´                               90b7611f99c784cd154379700e1f16ea68f9bf13ab2f2ba&rid=giphy.gif&ct=g" alt="Poggers Gif from GIPHY"></img>
+			<button className="cta-button connect-wallet-button" onClick={() => connectWallet(setCurrentAccount)}>
 				Connect Wallet
 			</button>
 		</div>
 	);
 	// Form to enter domain name and data
 	const renderInputForm = () => {
-		if (network !== 'Polygon Mumbai Testnet') {
+		if (network !== usedChain.chainName) {
 			return (
 				<div className="connect-wallet-container">
 					<p>Please connect to the Polygon Mumbai Testnet</p>
@@ -269,7 +316,8 @@ const App = () => {
 						<button className='cta-button mint-button' onClick={() => {
 							setEditing(false)
 							setRecord('')
-							setDomain('') }}>
+							setDomain('')
+						}}>
 							Cancel
 						</button>
 					</div>
@@ -287,12 +335,12 @@ const App = () => {
 	const renderMints = () => {
 		if (currentAccount && mints.length > 0) {
 			return (
-				<div className="mint-container">
+				<div >
 					<p className="subtitle"> Recently minted domains!</p>
 					<div className="mint-list">
 						{mints.map((mint, index) => {
 							return (
-								<div className="mint-item" key={index}>
+								<div className="mint-item" key={mint.id}>
 									<div className='mint-row'>
 										<a className="link" href={`https://testnets.opensea.io/assets/mumbai/${CONTRACT_ADDRESS}/${mint.id}`} target="_blank" rel="noopener noreferrer">
 											<p className="underlined">{' '}{mint.name}{tld}{' '}</p>
@@ -321,12 +369,31 @@ const App = () => {
 	}
 
 	// This runs our function when the page loads.
-	useEffect(() => {
-		checkIfWalletIsConnected();
-	}, []);
+	// useEffect(() => {
+	// 	checkIfWalletIsConnected();
+	// }, []);
 
 	useEffect(() => {
-		if (network === 'Polygon Mumbai Testnet') {
+		try {
+			const { ethereum } = window
+
+			if (!ethereum) {
+				alert("Get MetaMask -> https://metamask.io/");
+				return;
+			}
+			checkIfWalletIsConnected(ethereum, setCurrentAccount)
+			checkCurrentNetwork(ethereum, setNetwork, networks)
+			handleChangedAccount(ethereum)
+			handleChangedChain(ethereum)
+		} catch (error) {
+			console.log(error)
+		}
+		// checkIfWalletIsConnected();
+	}, []);
+
+
+	useEffect(() => {
+		if (network === usedChain.chainName) {
 			fetchMints();
 		}
 	}, [currentAccount, network]);
@@ -345,11 +412,15 @@ const App = () => {
 						</div>
 					</header>
 				</div>
-
+				{/* <LoadingIndicator /> */}
 				{!currentAccount && renderNotConnectedContainer()}
 				{currentAccount && renderInputForm()}
-				{mints && renderMints()}
-
+				{/*mints && renderMints()*/}
+				{(currentAccount && mints.length > 0)
+					&& <MintsGallery
+						mints={mints}
+						currentAccount={currentAccount}
+						editRecord={editRecord} />}
 				<div className="footer-container">
 					<img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
 					<a className="footer-text"
