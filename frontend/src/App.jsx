@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import './styles/App.css';
 import LoadingIndicator from "./components/LoadingIndicator";
 import MintsGallery from "./components/MintsGallery/MintsGallery";
+import WalletHandle from "./components/WalletHandle/WalletHandle";
+import ThreeDotsWave from "./components/ThreeDotsWave/ThreeDotsWave";
 import twitterLogo from './assets/twitter-logo.svg';
 import polygonLogo from './assets/polygonlogo.png';
 import ethLogo from './assets/ethlogo.png';
 import { networks } from './utils/networks';
-import { connectWallet, checkIfWalletIsConnected, checkCurrentNetwork ,handleChangedAccount, handleChangedChain } from './utils'
+import { connectWallet, checkIfWalletIsConnected, checkCurrentNetwork, handleChangedAccount, handleChangedChain, switchNetwork } from './utils'
 import { ethers } from "ethers";
 import { CONTRACT_ADDRESS, contract_abi, usedChain, tld } from './constants'
 
@@ -93,74 +95,75 @@ const App = () => {
 	// 		window.location.reload();
 	// 	}
 	// };
-	const switchNetwork = async () => {
-		const { ethereum } = window;
 
-		if (!ethereum) {
-			alert("Get MetaMask -> https://metamask.io/");
-			return;
-		} else {
-			try {
-				// Try to switch to the Mumbai testnet
-				await ethereum.request({
-					method: 'wallet_switchEthereumChain',
-					params: [{ chainId: usedChain.chainId }], // Check networks.js for hexadecimal network ids
-				});
-			} catch (error) {
-				// This error code means that the chain we want has not been added to MetaMask
-				// In this case we ask the user to add it to their MetaMask
-				if (error.code === 4902) {
-					try {
-						await ethereum.request({
-							method: 'wallet_addEthereumChain',
-							params: [usedChain],
-						});
-					} catch (error) {
-						console.log(error);
-					}
-				}
-				console.log(error);
-			}
-		}
-		// if (window.ethereum) {
-		// 	try {
-		// 		// Try to switch to the Mumbai testnet
-		// 		await window.ethereum.request({
-		// 			method: 'wallet_switchEthereumChain',
-		// 			params: [{ chainId: '0x13881' }], // Check networks.js for hexadecimal network ids
-		// 		});
-		// 	} catch (error) {
-		// 		// This error code means that the chain we want has not been added to MetaMask
-		// 		// In this case we ask the user to add it to their MetaMask
-		// 		if (error.code === 4902) {
-		// 			try {
-		// 				await window.ethereum.request({
-		// 					method: 'wallet_addEthereumChain',
-		// 					params: [
-		// 						{
-		// 							chainId: '0x13881',
-		// 							chainName: 'Polygon Mumbai Testnet',
-		// 							rpcUrls: ['https://rpc-mumbai.maticvigil.com/'],
-		// 							nativeCurrency: {
-		// 								name: "Mumbai Matic",
-		// 								symbol: "MATIC",
-		// 								decimals: 18
-		// 							},
-		// 							blockExplorerUrls: ["https://mumbai.polygonscan.com/"]
-		// 						},
-		// 					],
-		// 				});
-		// 			} catch (error) {
-		// 				console.log(error);
-		// 			}
-		// 		}
-		// 		console.log(error);
-		// 	}
-		// } else {
-		// 	// If window.ethereum is not found then MetaMask is not installed
-		// 	alert('MetaMask is not installed. Please install it to use this app: https://metamask.io/download.html');
-		// }
-	}
+	// const switchNetwork = async () => {
+	// 	const { ethereum } = window;
+
+	// 	if (!ethereum) {
+	// 		alert("Get MetaMask -> https://metamask.io/");
+	// 		return;
+	// 	} else {
+	// 		try {
+	// 			// Try to switch to the Mumbai testnet
+	// 			await ethereum.request({
+	// 				method: 'wallet_switchEthereumChain',
+	// 				params: [{ chainId: usedChain.chainId }], // Check networks.js for hexadecimal network ids
+	// 			});
+	// 		} catch (error) {
+	// 			// This error code means that the chain we want has not been added to MetaMask
+	// 			// In this case we ask the user to add it to their MetaMask
+	// 			if (error.code === 4902) {
+	// 				try {
+	// 					await ethereum.request({
+	// 						method: 'wallet_addEthereumChain',
+	// 						params: [usedChain],
+	// 					});
+	// 				} catch (error) {
+	// 					console.log(error);
+	// 				}
+	// 			}
+	// 			console.log(error);
+	// 		}
+	// 	}
+	// 	// if (window.ethereum) {
+	// 	// 	try {
+	// 	// 		// Try to switch to the Mumbai testnet
+	// 	// 		await window.ethereum.request({
+	// 	// 			method: 'wallet_switchEthereumChain',
+	// 	// 			params: [{ chainId: '0x13881' }], // Check networks.js for hexadecimal network ids
+	// 	// 		});
+	// 	// 	} catch (error) {
+	// 	// 		// This error code means that the chain we want has not been added to MetaMask
+	// 	// 		// In this case we ask the user to add it to their MetaMask
+	// 	// 		if (error.code === 4902) {
+	// 	// 			try {
+	// 	// 				await window.ethereum.request({
+	// 	// 					method: 'wallet_addEthereumChain',
+	// 	// 					params: [
+	// 	// 						{
+	// 	// 							chainId: '0x13881',
+	// 	// 							chainName: 'Polygon Mumbai Testnet',
+	// 	// 							rpcUrls: ['https://rpc-mumbai.maticvigil.com/'],
+	// 	// 							nativeCurrency: {
+	// 	// 								name: "Mumbai Matic",
+	// 	// 								symbol: "MATIC",
+	// 	// 								decimals: 18
+	// 	// 							},
+	// 	// 							blockExplorerUrls: ["https://mumbai.polygonscan.com/"]
+	// 	// 						},
+	// 	// 					],
+	// 	// 				});
+	// 	// 			} catch (error) {
+	// 	// 				console.log(error);
+	// 	// 			}
+	// 	// 		}
+	// 	// 		console.log(error);
+	// 	// 	}
+	// 	// } else {
+	// 	// 	// If window.ethereum is not found then MetaMask is not installed
+	// 	// 	alert('MetaMask is not installed. Please install it to use this app: https://metamask.io/download.html');
+	// 	// }
+	// }
 	const fetchMints = async () => {
 		try {
 			const { ethereum } = window;
@@ -227,6 +230,7 @@ const App = () => {
 		try {
 			const { ethereum } = window;
 			if (ethereum) {
+				setLoading(true)
 				const provider = new ethers.providers.Web3Provider(ethereum);
 				const signer = provider.getSigner();
 				const contract = new ethers.Contract(CONTRACT_ADDRESS, contract_abi, signer);
@@ -259,10 +263,12 @@ const App = () => {
 						alert("Transaction failed! Please try again");
 					}
 				}
+				setLoading(false)
 
 			}
 		}
 		catch (error) {
+			setLoading(false)
 			console.log(error);
 		}
 	}
@@ -272,8 +278,19 @@ const App = () => {
 			<p>
 				<a className="footer-text" href="https://giphy.com/gifs/wow-wtf-good-WCcdypx0dwswG1Gs95">via GIPHY</a>
 			</p>
-			<img src="https://media3.giphy.com/media/WCcdypx0dwswG1Gs95/giphy.gif?cid=&:ref-=´                               90b7611f99c784cd154379700e1f16ea68f9bf13ab2f2ba&rid=giphy.gif&ct=g" alt="Poggers Gif from GIPHY"></img>
-			<button className="cta-button connect-wallet-button" onClick={() => connectWallet(setCurrentAccount)}>
+			<img src="https://media3.giphy.com/media/WCcdypx0dwswG1Gs95/giphy.gif?cid=&:ref-=´90b7611f99c784cd154379700e1f16ea68f9bf13ab2f2ba&rid=giphy.gif&ct=g" alt="Poggers Gif from GIPHY"></img>
+			<button className="cta-button connect-wallet-button" onClick={() => {
+				try {
+					const { ethereum } = window;
+
+					if (!ethereum) {
+						alert("Get MetaMask -> https://metamask.io/");
+						return;
+					}
+					connectWallet(ethereum, setCurrentAccount)
+				} catch (error) {
+					console.log(error)
+			}}}>
 				Connect Wallet
 			</button>
 		</div>
@@ -284,7 +301,19 @@ const App = () => {
 			return (
 				<div className="connect-wallet-container">
 					<p>Please connect to the Polygon Mumbai Testnet</p>
-					<button className='cta-button mint-button' onClick={switchNetwork}>Click here to switch</button>
+					<button className='cta-button mint-button' onClick={() => {
+						try {
+							const { ethereum } = window;
+
+							if (!ethereum) {
+								alert("Get MetaMask -> https://metamask.io/");
+								return;
+							}
+							switchNetwork(ethereum)
+						} catch (error) {
+							console.log(error)
+					}
+					}}>Click here to switch</button>
 				</div>
 			);
 		}
@@ -324,7 +353,7 @@ const App = () => {
 				) : (
 					// If editing is not true, the mint button will be returned instead
 					<button className='cta-button mint-button' disabled={loading} onClick={mintDomain}>
-						Mint
+						{loading? <ThreeDotsWave /> : 'Mint'}
 					</button>
 				)}
 
@@ -407,8 +436,9 @@ const App = () => {
 							<p className="subtitle">Your immortal API on the blockchain!</p>
 						</div>
 						<div className="right">
-							<img alt="Network logo" className="logo" src={network.includes("Polygon") ? polygonLogo : ethLogo} />
-							{currentAccount ? <p> Wallet: {currentAccount.slice(0, 6)}...{currentAccount.slice(-4)} </p> : <p> Not connected </p>}
+							{/* <img alt="Network logo" className="logo" src={network.includes("Polygon") ? polygonLogo : ethLogo} />
+							{currentAccount ? <p> Wallet: {currentAccount.slice(0, 6)}...{currentAccount.slice(-4)} </p> : <p> Not connected </p>} */}
+							<WalletHandle currentAccount={currentAccount} network={network}/>
 						</div>
 					</header>
 				</div>

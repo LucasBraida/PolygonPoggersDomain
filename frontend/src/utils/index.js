@@ -4,6 +4,6 @@ import {checkIfWalletIsConnected} from './checkIfWalletIsConnected'
 import { checkCurrentNetwork } from './checkCurrentNetwork'
 import {handleChangedAccount} from './handleChangedAccount'
 import {handleChangedChain} from './handleChangedChain'
+import {switchNetwork} from './switchNetwork'
 
-
-export {networks, connectWallet, checkIfWalletIsConnected, checkCurrentNetwork ,handleChangedAccount, handleChangedChain}
+export {networks, connectWallet, checkIfWalletIsConnected, checkCurrentNetwork ,handleChangedAccount, handleChangedChain, switchNetwork}
