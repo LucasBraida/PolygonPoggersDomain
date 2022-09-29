@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from "react";
 import './styles/App.css';
-import LoadingIndicator from "./components/LoadingIndicator";
 import MintsGallery from "./components/MintsGallery/MintsGallery";
 import WalletHandle from "./components/WalletHandle/WalletHandle";
+import ConnectWalletContainer from "./components/ConnectWalletContainer/ConnectWalletContainer";
+import SwitchNetworkContainer from "./components/SwitchNetworkContainer/SwitchNetworkContainer";
 import ThreeDotsWave from "./components/ThreeDotsWave/ThreeDotsWave";
 import twitterLogo from './assets/twitter-logo.svg';
-import polygonLogo from './assets/polygonlogo.png';
-import ethLogo from './assets/ethlogo.png';
 import { networks } from './utils/networks';
 import { connectWallet, checkIfWalletIsConnected, checkCurrentNetwork, handleChangedAccount, handleChangedChain, switchNetwork } from './utils'
 import { ethers } from "ethers";
 import { CONTRACT_ADDRESS, contract_abi, usedChain, tld } from './constants'
 
 /*TODO
--transform wallet handle into a different component
+- ConnectWalletContainer is being rendered every time there is a page reload because currentAccount is set to Null for a short while
+	Try to fix this with animation using framer motion
+	OR think about alternative for handle Network Change than reload
 - alter css to be responsive and adeuqate to small devices
+- add loading animaion during minting and fetching
+- add framer motion
+- remove renders as components?
 */
 // Constants
 const TWITTER_HANDLE = '_buildspace';
@@ -49,7 +53,6 @@ const App = () => {
 	const [editing, setEditing] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [mints, setMints] = useState([]);
-
 	// const connectWallet = async () => {
 	// 	try {
 	// 		const { ethereum } = window;
@@ -195,6 +198,7 @@ const App = () => {
 			console.log(error);
 		}
 	}
+
 	const updateDomain = async () => {
 		if (!record || !domain) { return }
 		setLoading(true);
@@ -299,22 +303,23 @@ const App = () => {
 	const renderInputForm = () => {
 		if (network !== usedChain.chainName) {
 			return (
-				<div className="connect-wallet-container">
-					<p>Please connect to the Polygon Mumbai Testnet</p>
-					<button className='cta-button mint-button' onClick={() => {
-						try {
-							const { ethereum } = window;
+				// <div className="connect-wallet-container">
+				// 	<p>Please connect to the Polygon Mumbai Testnet</p>
+				// 	<button className='cta-button mint-button' onClick={() => {
+				// 		try {
+				// 			const { ethereum } = window;
 
-							if (!ethereum) {
-								alert("Get MetaMask -> https://metamask.io/");
-								return;
-							}
-							switchNetwork(ethereum)
-						} catch (error) {
-							console.log(error)
-					}
-					}}>Click here to switch</button>
-				</div>
+				// 			if (!ethereum) {
+				// 				alert("Get MetaMask -> https://metamask.io/");
+				// 				return;
+				// 			}
+				// 			switchNetwork(ethereum)
+				// 		} catch (error) {
+				// 			console.log(error)
+				// 	}
+				// 	}}>Click here to switch</button>
+				// </div>
+				<SwitchNetworkContainer />
 			);
 		}
 
@@ -361,35 +366,35 @@ const App = () => {
 		);
 	}
 	// Add this render function next to your other render functions
-	const renderMints = () => {
-		if (currentAccount && mints.length > 0) {
-			return (
-				<div >
-					<p className="subtitle"> Recently minted domains!</p>
-					<div className="mint-list">
-						{mints.map((mint, index) => {
-							return (
-								<div className="mint-item" key={mint.id}>
-									<div className='mint-row'>
-										<a className="link" href={`https://testnets.opensea.io/assets/mumbai/${CONTRACT_ADDRESS}/${mint.id}`} target="_blank" rel="noopener noreferrer">
-											<p className="underlined">{' '}{mint.name}{tld}{' '}</p>
-										</a>
-										{/* If mint.owner is currentAccount, add an "edit" button*/}
-										{mint.owner.toLowerCase() === currentAccount.toLowerCase() ?
-											<button className="edit-button" onClick={() => editRecord(mint.name)}>
-												<img className="edit-icon" src="https://img.icons8.com/metro/26/000000/pencil.png" alt="Edit button" />
-											</button>
-											:
-											null
-										}
-									</div>
-									<p> {mint.record} </p>
-								</div>)
-						})}
-					</div>
-				</div>);
-		}
-	};
+	// const renderMints = () => {
+	// 	if (currentAccount && mints.length > 0) {
+	// 		return (
+	// 			<div >
+	// 				<p className="subtitle"> Recently minted domains!</p>
+	// 				<div className="mint-list">
+	// 					{mints.map((mint, index) => {
+	// 						return (
+	// 							<div className="mint-item" key={mint.id}>
+	// 								<div className='mint-row'>
+	// 									<a className="link" href={`https://testnets.opensea.io/assets/mumbai/${CONTRACT_ADDRESS}/${mint.id}`} target="_blank" rel="noopener noreferrer">
+	// 										<p className="underlined">{' '}{mint.name}{tld}{' '}</p>
+	// 									</a>
+	// 									{/* If mint.owner is currentAccount, add an "edit" button*/}
+	// 									{mint.owner.toLowerCase() === currentAccount.toLowerCase() ?
+	// 										<button className="edit-button" onClick={() => editRecord(mint.name)}>
+	// 											<img className="edit-icon" src="https://img.icons8.com/metro/26/000000/pencil.png" alt="Edit button" />
+	// 										</button>
+	// 										:
+	// 										null
+	// 									}
+	// 								</div>
+	// 								<p> {mint.record} </p>
+	// 							</div>)
+	// 					})}
+	// 				</div>
+	// 			</div>);
+	// 	}
+	// };
 	// This will take us into edit mode and show us the edit buttons!
 	const editRecord = (name) => {
 		console.log("Editing record for", name);
@@ -426,6 +431,7 @@ const App = () => {
 			fetchMints();
 		}
 	}, [currentAccount, network]);
+
 	return (
 		<div className="App">
 			<div className="container">
@@ -443,7 +449,7 @@ const App = () => {
 					</header>
 				</div>
 				{/* <LoadingIndicator /> */}
-				{!currentAccount && renderNotConnectedContainer()}
+				{!currentAccount && <ConnectWalletContainer setCurrentAccount={setCurrentAccount}/>}
 				{currentAccount && renderInputForm()}
 				{/*mints && renderMints()*/}
 				{(currentAccount && mints.length > 0)
