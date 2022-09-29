@@ -87,7 +87,7 @@ header{
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: auto;
+  /* margin: auto; */
   max-width: 550px;
 }
 

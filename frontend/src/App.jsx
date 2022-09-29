@@ -417,8 +417,14 @@ const App = () => {
 			}
 			checkIfWalletIsConnected(ethereum, setCurrentAccount)
 			checkCurrentNetwork(ethereum, setNetwork, networks)
-			handleChangedAccount(ethereum)
-			handleChangedChain(ethereum)
+			//handleChangedAccount(ethereum)
+			//handleChangedChain(ethereum)
+			ethereum.on('accountsChanged', () => {
+				checkIfWalletIsConnected(ethereum, setCurrentAccount)
+			});
+			ethereum.on('chainChanged', () => {
+				checkCurrentNetwork(ethereum, setNetwork, networks)
+			});
 		} catch (error) {
 			console.log(error)
 		}
@@ -449,10 +455,11 @@ const App = () => {
 					</header>
 				</div>
 				{/* <LoadingIndicator /> */}
-				{!currentAccount && <ConnectWalletContainer setCurrentAccount={setCurrentAccount}/>}
-				{currentAccount && renderInputForm()}
+				{(network !== usedChain.chainName)&& <SwitchNetworkContainer />}
+				{(!currentAccount && (network === usedChain.chainName)) && <ConnectWalletContainer setCurrentAccount={setCurrentAccount}/>}
+				{(currentAccount && (network === usedChain.chainName)) && renderInputForm()}
 				{/*mints && renderMints()*/}
-				{(currentAccount && mints.length > 0)
+				{((currentAccount && (network === usedChain.chainName)) && mints.length > 0)
 					&& <MintsGallery
 						mints={mints}
 						currentAccount={currentAccount}
