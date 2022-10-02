@@ -6,10 +6,11 @@ const ConnectWalletContainer = ({setCurrentAccount}) => {
     console.log("I am being rendered")
   return (
     <div className="connect-wallet-container">
+			
+			<img src="https://media3.giphy.com/media/WCcdypx0dwswG1Gs95/giphy.gif?cid=&:ref-=´90b7611f99c784cd154379700e1f16ea68f9bf13ab2f2ba&rid=giphy.gif&ct=g" alt="Poggers Gif from GIPHY"></img>
 			<p>
 				<a className="footer-text" href="https://giphy.com/gifs/wow-wtf-good-WCcdypx0dwswG1Gs95">via GIPHY</a>
 			</p>
-			<img src="https://media3.giphy.com/media/WCcdypx0dwswG1Gs95/giphy.gif?cid=&:ref-=´90b7611f99c784cd154379700e1f16ea68f9bf13ab2f2ba&rid=giphy.gif&ct=g" alt="Poggers Gif from GIPHY"></img>
 			<button className="cta-button connect-wallet-button" onClick={() => {
 				try {
 					const { ethereum } = window;
