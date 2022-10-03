@@ -9,7 +9,7 @@ const hre = require("hardhat");
 async function main() {
   const [owner, randomPerson] = await hre.ethers.getSigners();
   const Domains = await hre.ethers.getContractFactory("Domains");
-  const domains = await Domains.deploy('poggers', hre.ethers.utils.parseEther('0.01'));
+  const domains = await Domains.deploy('poggers', hre.ethers.utils.parseEther('0.01'), 10);
 
   await domains.deployed();
   console.log('deployed')
@@ -30,7 +30,7 @@ async function main() {
     console.log(error)
   }
 
-  await domains.connect(randomPerson).registerWithRecord("Teste22", "Teste22 Cool", {value: hre.ethers.utils.parseEther('0.02')});
+  await domains.connect(randomPerson).registerWithRecord("Teste22222", "Teste22 Cool", {value: hre.ethers.utils.parseEther('0.02')});
   testeURI = await domains.tokenURI(1)
   console.log(testeURI)
   console.log("/////////////////////////////////////////////////////////")
@@ -44,6 +44,20 @@ async function main() {
   console.log(domain)
   let domainsAndRecords = await domains.getAllNamesWithRecords()
   console.log(domainsAndRecords[0][2])
+  console.log("/////////////////////////////////////////////////////////")
+  try {
+    await domains.registerWithRecord("Teste222221", "Teste22 Cool", {value: hre.ethers.utils.parseEther('0.02')});
+  } catch (error) {
+    console.log(error)
+  }
+  await domains.setDomainMaxSize(11)
+  try {
+    await domains.registerWithRecord("Teste222221", "Teste22 Cool", {value: hre.ethers.utils.parseEther('0.02')});
+    testeURI = await domains.tokenURI(2)
+    console.log(testeURI)
+  } catch (error) {
+    console.log(error)
+  }
   //await domains.setRecord("Teste", "Teste")
   //let add = await domains.getAddress("Teste");
   //console.log(add);
