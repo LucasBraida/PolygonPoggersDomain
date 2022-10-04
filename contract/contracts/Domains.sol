@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 /*TODO
-- use struct?
+- standarize variables and functions names
+- use struct? where? cost advantages?
 - add tests to everything
-- add checkdomainAvailability
-- alter NFT record information to be stat??
-- add record information to URI
-- add maximum record size and setter
 */
 pragma solidity ^0.8.10;
 import {StringUtils} from "./libraries/StringUtils.sol";
@@ -19,7 +16,7 @@ contract Domains is ERC721URIStorage, Ownable {
     error Unauthorized();
     error AlreadyRegistered();
     error InvalidName(string name);
-    error RecordTooLong();
+    error InvalidRecordSize();
     error NotMininumPriceValue();
 
     using Counters for Counters.Counter;
@@ -63,23 +60,23 @@ contract Domains is ERC721URIStorage, Ownable {
     function setRecordMaxSize(uint _recordMaxSize) public onlyOwner{
         recordMaxSize = _recordMaxSize;
     }
-    function generateURIJson(string memory name, string memory _record)
+    function generateURIJson(string memory _name, string memory _record)
         internal
         view
         returns (string memory){
         // Combine the name passed into the function  with the TLD
-        string memory _name = string(abi.encodePacked(name, ".", tld));
+        string memory name = string(abi.encodePacked(_name, ".", tld));
         // Create the SVG (image) for the NFT with the name
         string memory finalSvg = string(
-            abi.encodePacked(svgPartOne, _name, svgPartTwo)
+            abi.encodePacked(svgPartOne, name, svgPartTwo)
         );
         string memory json = Base64.encode(
             abi.encodePacked(
                 '{"name": "',
-                _name,
+                name,
                 '", "description": "A domain on the Polygon Poggers name service", "image": "data:image/svg+xml;base64,',
                 Base64.encode(bytes(finalSvg)),
-                '","attributes": [{"trait_type": "Record", "value": "',
+                '","record": "',_record,'","attributes": [{"trait_type": "Record", "value": "',
                 _record,
                 '"}]}'
             )
@@ -108,7 +105,7 @@ contract Domains is ERC721URIStorage, Ownable {
                 _name,
                 '", "description": "A domain on the Showcrivel name service", "image": "data:image/svg+xml;base64,',
                 Base64.encode(bytes(finalSvg)),
-                '","attributes": [{"trait_type": "Record", "value": "No record set"}]}'
+                '","record": "No record set","attributes": [{"trait_type": "Record", "value": "No record set"}]}'
             )
         );
 
@@ -173,7 +170,7 @@ contract Domains is ERC721URIStorage, Ownable {
         //require(msg.value >= price, "Not enough Matic paid");
         if(msg.value < price) revert NotMininumPriceValue();
         if(!validDomainSize(name)) revert InvalidName(name);
-        if(!validRecordSize(record)) revert RecordTooLong();
+        if(!validRecordSize(record)) revert InvalidRecordSize();
         uint256 newRecordId = _tokenIds.current();
 
         // // Combine the name passed into the function  with the TLD
@@ -214,7 +211,7 @@ contract Domains is ERC721URIStorage, Ownable {
         // Check that the owner is the transaction sender
         //require(domains[name] == msg.sender, "Not domain owner");
         if(domains[name] != msg.sender) revert Unauthorized();
-        if(!validRecordSize(record)) revert RecordTooLong();
+        if(!validRecordSize(record)) revert InvalidRecordSize();
         uint256 tokenId = domainToTokenID[name];
         records[name] = record;
         string memory updatedTokenURI = generateURIJson(name, record);

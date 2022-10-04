@@ -9,7 +9,7 @@ const hre = require("hardhat");
 async function main() {
   const [owner, randomPerson] = await hre.ethers.getSigners();
   const Domains = await hre.ethers.getContractFactory("Domains");
-  const domains = await Domains.deploy('poggers', hre.ethers.utils.parseEther('0.01'), 10);
+  const domains = await Domains.deploy('poggers', hre.ethers.utils.parseEther('0.01'), 10, 120);
 
   await domains.deployed();
   console.log('deployed')
