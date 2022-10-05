@@ -8,7 +8,7 @@ const hre = require("hardhat");
 
 async function main() {
   const [owner, randomPerson] = await hre.ethers.getSigners();
-  const Domains = await hre.ethers.getContractFactory("Domains");
+  const Domains = await hre.ethers.getContractFactory("PolygonPoggersDomains");
   const domains = await Domains.deploy('poggers', hre.ethers.utils.parseEther('0.01'), 10, 120);
 
   await domains.deployed();
@@ -42,8 +42,8 @@ async function main() {
   console.log("/////////////////////////////////////////////////////////")
   let domain = await domains.getAllNames()
   console.log(domain)
-  let domainsAndRecords = await domains.getAllNamesWithRecords()
-  console.log(domainsAndRecords[0][2])
+  //let domainsAndRecords = await domains.getAllNamesWithRecords()
+  console.log(domain[0][2])
   console.log("/////////////////////////////////////////////////////////")
   try {
     await domains.registerWithRecord("Teste222221", "Teste22 Cool", {value: hre.ethers.utils.parseEther('0.02')});
