@@ -16,6 +16,8 @@ import { CONTRACT_ADDRESS, contract_abi, usedChain, tld } from './constants'
 - alter css to be responsive and adeuqate to small devices
 - add loading animaion during fetching ?
 - add framer motion
+- add SendEth/sendMATIC to transfer using the resolved names from the domain
+- add address to domain UI information
 */
 // Constants
 const TWITTER_HANDLE = '_buildspace';
@@ -49,7 +51,7 @@ const App = () => {
 	const [network, setNetwork] = useState('');
 	const [editing, setEditing] = useState(false);
 	const [mints, setMints] = useState([]);
-	
+
 	const fetchMints = async () => {
 		try {
 			const { ethereum } = window;
@@ -331,8 +333,8 @@ const App = () => {
 				{(network !== usedChain.chainName)&& <SwitchNetworkContainer />}
 				{/*check if user is connected and in the correct network */}
 				{(!currentAccount && (network === usedChain.chainName)) && <ConnectWalletContainer setCurrentAccount={setCurrentAccount}/>}
-				{(currentAccount && (network === usedChain.chainName)) 
-					&& <InputForm 
+				{(currentAccount && (network === usedChain.chainName))
+					&& <InputForm
 						domain={domain}
 						setDomain={setDomain}
 						record={record}
