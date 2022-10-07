@@ -4,7 +4,8 @@
 
 .App {
   height: 100vh;
-  background-color: #0d1116;
+  /* background-color: #0d1116; */
+  background-color: rgb(16, 0, 43);
   text-align: center;
   color: white;
 }
@@ -15,7 +16,8 @@ p {
 
 .container {
   height: 100%;
-  background-color: #181818;
+  /* background-color: #181818; */
+  background-color: rgb(16, 0, 43);
   display: flex;
   flex-direction: column;
   justify-content: space-between;

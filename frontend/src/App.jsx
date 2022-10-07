@@ -4,11 +4,12 @@ import MintsGallery from "./components/MintsGallery/MintsGallery";
 import WalletHandle from "./components/WalletHandle/WalletHandle";
 import ConnectWalletContainer from "./components/ConnectWalletContainer/ConnectWalletContainer";
 import SwitchNetworkContainer from "./components/SwitchNetworkContainer/SwitchNetworkContainer";
+import SendEthModal from "./components/SendEthModal/SendEthModal";
 import ThreeDotsWave from "./components/ThreeDotsWave/ThreeDotsWave";
 import InputForm from "./components/InputForm/InputForm";
 import twitterLogo from './assets/twitter-logo.svg';
 import { networks } from './utils/networks';
-import { connectWallet, checkIfWalletIsConnected, checkCurrentNetwork, handleChangedAccount, handleChangedChain, switchNetwork } from './utils'
+import { connectWallet, checkIfWalletIsConnected, checkCurrentNetwork, handleChangedAccount, handleChangedChain, switchNetwork, sendNativeToken } from './utils'
 import { ethers } from "ethers";
 import { CONTRACT_ADDRESS, contract_abi, usedChain, tld } from './constants'
 
@@ -51,6 +52,9 @@ const App = () => {
 	const [network, setNetwork] = useState('');
 	const [editing, setEditing] = useState(false);
 	const [mints, setMints] = useState([]);
+	const [openModal, setOpenModal] = useState(false)
+	const handleOpenModal = () => setOpenModal(true)
+	const handleCloseModal = () => setOpenModal(false)
 
 	const fetchMints = async () => {
 		try {
@@ -329,6 +333,7 @@ const App = () => {
 						</div>
 					</header>
 				</div>
+				<SendEthModal open={openModal} handleOpen={handleOpenModal} handleClose={handleCloseModal} senderAccount={currentAccount} receiverAccount='0x8fCaD84Ad1A59D51FA81c87B4c05107C054AfBF9'/>
 				{/*Check if user is in the correct network*/}
 				{(network !== usedChain.chainName)&& <SwitchNetworkContainer />}
 				{/*check if user is connected and in the correct network */}
@@ -342,6 +347,7 @@ const App = () => {
 						editing={editing}
 						setEditing={setEditing}
 						fetchMints={fetchMints}/>}
+						<button onClick={handleOpenModal}>Send MATIC</button>
 				{((currentAccount && (network === usedChain.chainName)) && mints.length > 0)
 					&& <MintsGallery
 						mints={mints}

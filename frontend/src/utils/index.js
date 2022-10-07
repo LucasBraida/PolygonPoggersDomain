@@ -5,5 +5,6 @@ import { checkCurrentNetwork } from './checkCurrentNetwork'
 import {handleChangedAccount} from './handleChangedAccount'
 import {handleChangedChain} from './handleChangedChain'
 import {switchNetwork} from './switchNetwork'
+import {sendNativeToken} from './sendNativeToken'
 
-export {networks, connectWallet, checkIfWalletIsConnected, checkCurrentNetwork ,handleChangedAccount, handleChangedChain, switchNetwork}
+export {networks, connectWallet, checkIfWalletIsConnected, checkCurrentNetwork ,handleChangedAccount, handleChangedChain, switchNetwork, sendNativeToken}

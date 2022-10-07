@@ -22,7 +22,7 @@
     color: black;
     min-width: 150px;
     max-width: fit-content;
-    box-shadow: 0px 0px 10px 3px rgba(255, 255, 255, 0.2);
+    box-shadow: 0px 0px 10px 3px rgba(224, 170, 255, 0.164);
 }
 
 /* Different background-colour for every nth mint-item */
