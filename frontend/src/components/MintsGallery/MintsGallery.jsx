@@ -1,7 +1,7 @@
 import React from 'react'
 import {CONTRACT_ADDRESS, tld} from '../../constants'
 import './MintsGallery.css'
-const MintsGallery = ({mints, currentAccount, editRecord}) => {
+const MintsGallery = ({mints, currentAccount, editRecord, callSendEth}) => {
   return (
     <div className="mint-container">
         <p className="subtitle"> Recently minted domains!</p>
@@ -19,7 +19,9 @@ const MintsGallery = ({mints, currentAccount, editRecord}) => {
                                     <img className="edit-icon" src="https://img.icons8.com/metro/26/000000/pencil.png" alt="Edit button" />
                                 </button>
                                 :
-                                null
+                                <button className="edit-button" onClick={() => callSendEth(mint.name, mint.owner)}>
+                                    <img className="edit-icon" src="https://img.icons8.com/metro/26/000000/pencil.png" alt="Edit button" />
+                                </button>
                             }
                         </div>
                         <p> {mint.record} </p>

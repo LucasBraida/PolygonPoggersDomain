@@ -89,7 +89,11 @@ const InputForm = ({ domain, setDomain, record, setRecord, editing, setEditing, 
                     type="text"
                     value={domain}
                     placeholder='domain'
-                    onChange={e => setDomain(e.target.value)}
+                    onChange={e => {
+                        if(!editing){
+                            setDomain(e.target.value)
+                        }
+                        }}
                 />
                 <p className='tld'> {tld} </p>
             </div>

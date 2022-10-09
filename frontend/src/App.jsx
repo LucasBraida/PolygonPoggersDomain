@@ -18,6 +18,12 @@ import { CONTRACT_ADDRESS, contract_abi, usedChain, tld } from './constants'
 - add loading animaion during fetching ?
 - add framer motion
 - add SendEth/sendMATIC to transfer using the resolved names from the domain
+- add loading animation to send eth
+- add tld to send MATIC modal
+- add underline send MATica domain
+- rename send eth to send matic
+- alter send matica icon to cash symbol
+- check hover css to edit and cash icon
 - add address to domain UI information
 */
 // Constants
@@ -52,9 +58,12 @@ const App = () => {
 	const [network, setNetwork] = useState('');
 	const [editing, setEditing] = useState(false);
 	const [mints, setMints] = useState([]);
+	const [receiverAddress, setReceiverAddress] = useState("")
 	const [openModal, setOpenModal] = useState(false)
 	const handleOpenModal = () => setOpenModal(true)
 	const handleCloseModal = () => setOpenModal(false)
+
+	const galleryAvailable = (currentAccount && (network === usedChain.chainName)) && mints.length > 0
 
 	const fetchMints = async () => {
 		try {
@@ -291,6 +300,12 @@ const App = () => {
 		setDomain(name);
 	}
 
+	const callSendEth = (domain, receiverAddress) => {
+		setDomain(domain)
+		setReceiverAddress(receiverAddress)
+		handleOpenModal()
+	}
+
 	useEffect(() => {
 		try {
 			const { ethereum } = window
@@ -329,15 +344,14 @@ const App = () => {
 							<p className="subtitle">Your immortal API on the blockchain!</p>
 						</div>
 						<div className="right">
-							<WalletHandle currentAccount={currentAccount} network={network}/>
+							<WalletHandle currentAccount={currentAccount} network={network} />
 						</div>
 					</header>
 				</div>
-				<SendEthModal open={openModal} handleOpen={handleOpenModal} handleClose={handleCloseModal} senderAccount={currentAccount} receiverAccount='0x8fCaD84Ad1A59D51FA81c87B4c05107C054AfBF9'/>
 				{/*Check if user is in the correct network*/}
-				{(network !== usedChain.chainName)&& <SwitchNetworkContainer />}
+				{(network !== usedChain.chainName) && <SwitchNetworkContainer />}
 				{/*check if user is connected and in the correct network */}
-				{(!currentAccount && (network === usedChain.chainName)) && <ConnectWalletContainer setCurrentAccount={setCurrentAccount}/>}
+				{(!currentAccount && (network === usedChain.chainName)) && <ConnectWalletContainer setCurrentAccount={setCurrentAccount} />}
 				{(currentAccount && (network === usedChain.chainName))
 					&& <InputForm
 						domain={domain}
@@ -346,13 +360,22 @@ const App = () => {
 						setRecord={setRecord}
 						editing={editing}
 						setEditing={setEditing}
-						fetchMints={fetchMints}/>}
-						<button onClick={handleOpenModal}>Send MATIC</button>
-				{((currentAccount && (network === usedChain.chainName)) && mints.length > 0)
+						fetchMints={fetchMints} />}
+				<button onClick={handleOpenModal}>Send MATIC</button>
+				{galleryAvailable && 
+				<SendEthModal 
+					open={openModal} 
+					handleOpen={handleOpenModal} 
+					handleClose={handleCloseModal} 
+					domain={domain}
+					receiverAddress={receiverAddress} />
+				}
+				{galleryAvailable
 					&& <MintsGallery
 						mints={mints}
 						currentAccount={currentAccount}
-						editRecord={editRecord} />}
+						editRecord={editRecord}
+						callSendEth={callSendEth} />}
 				<div className="footer-container">
 					<img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
 					<a className="footer-text"

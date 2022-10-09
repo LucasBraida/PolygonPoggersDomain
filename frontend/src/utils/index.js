@@ -6,5 +6,17 @@ import {handleChangedAccount} from './handleChangedAccount'
 import {handleChangedChain} from './handleChangedChain'
 import {switchNetwork} from './switchNetwork'
 import {sendNativeToken} from './sendNativeToken'
+import {stringOfNumberWithDecimal} from './stringOfNumberWithDecimal'
 
-export {networks, connectWallet, checkIfWalletIsConnected, checkCurrentNetwork ,handleChangedAccount, handleChangedChain, switchNetwork, sendNativeToken}
+
+export {
+    networks,
+    connectWallet,
+    checkIfWalletIsConnected,
+    checkCurrentNetwork,
+    handleChangedAccount,
+    handleChangedChain,
+    switchNetwork,
+    sendNativeToken,
+    stringOfNumberWithDecimal
+}
