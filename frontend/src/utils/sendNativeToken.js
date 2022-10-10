@@ -19,12 +19,17 @@ export const sendNativeToken = async (receiver, value) => {
             // Check if the transaction was successfully completed
             if (receipt.status === 1) {
                 console.log("Sucessfull transaction! https://mumbai.polygonscan.com/tx/" + tx.hash);
+                return true
             } else {
                 alert("Transaction failed! Please try again");
+                return false
             }
+        } else {
+            return false
         }
     } catch (error) {
         console.log(error)
+        return false
     }
-    
+
 }

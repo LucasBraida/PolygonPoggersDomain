@@ -1,5 +1,7 @@
 import React from 'react'
 import {CONTRACT_ADDRESS, tld} from '../../constants'
+import pencilIcon from '../../assets/pencil.png'
+import moneyIcon from '../../assets/money.png'
 import './MintsGallery.css'
 const MintsGallery = ({mints, currentAccount, editRecord, callSendEth}) => {
   return (
@@ -16,11 +18,11 @@ const MintsGallery = ({mints, currentAccount, editRecord, callSendEth}) => {
                             {/* If mint.owner is currentAccount, add an "edit" button*/}
                             {mint.owner.toLowerCase() === currentAccount.toLowerCase() ?
                                 <button className="edit-button" onClick={() => editRecord(mint.name)}>
-                                    <img className="edit-icon" src="https://img.icons8.com/metro/26/000000/pencil.png" alt="Edit button" />
+                                    <img className="edit-icon" src={pencilIcon} alt="Edit button" />
                                 </button>
                                 :
                                 <button className="edit-button" onClick={() => callSendEth(mint.name, mint.owner)}>
-                                    <img className="edit-icon" src="https://img.icons8.com/metro/26/000000/pencil.png" alt="Edit button" />
+                                    <img className="edit-icon" src={moneyIcon} alt="Edit button" />
                                 </button>
                             }
                         </div>

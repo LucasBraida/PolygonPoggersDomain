@@ -16,7 +16,7 @@
 }
 
 .modalWindow-header{
-    text-align: center;  
+    text-align: center;
 }
 
 .modalWindow-header > h3{
@@ -40,10 +40,14 @@
   margin: 15px 0px;
   animation: gradient-animation 4s ease infinite;
   border-radius: 20px;
-  /* padding: 0px 1.8rem;
+  border: none;
+  width: 160px;
+  height: 45px;
   display: flex;
   align-items: center;
   justify-content: center;
+  /* padding: 0px 1.8rem;
+
   height: 45px;
   border: 0;
   min-width: 110px;
@@ -52,4 +56,15 @@
   padding-right: 40px;
   border-radius: 10px; */
 
+}
+
+
+.modalWindow-button:disabled{
+    background: #550072;
+    color: rgb(209, 209, 209);
+    cursor: not-allowed;
+  }
+
+  .modalWindow-button--success:disabled{
+    background: rgba(49, 211, 49, 0.884);
 }

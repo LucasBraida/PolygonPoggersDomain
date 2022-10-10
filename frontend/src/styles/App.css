@@ -139,19 +139,9 @@ header{
   justify-content: space-between;
 }
 
-.edit-button{
-  border-radius: 50%;
-  cursor: pointer;
-  margin-left: 3px;
-  top: 20px;
-  border: 0px;
-  font-size: 12px;
-  background-color: transparent;
-}
 
-.edit-icon{
-  width: 12px;
-}
+
+
 
 
 .footer-container {

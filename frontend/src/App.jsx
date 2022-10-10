@@ -4,7 +4,7 @@ import MintsGallery from "./components/MintsGallery/MintsGallery";
 import WalletHandle from "./components/WalletHandle/WalletHandle";
 import ConnectWalletContainer from "./components/ConnectWalletContainer/ConnectWalletContainer";
 import SwitchNetworkContainer from "./components/SwitchNetworkContainer/SwitchNetworkContainer";
-import SendEthModal from "./components/SendEthModal/SendEthModal";
+import SendMaticModal from "./components/SendMaticModal/SendMaticModal";
 import ThreeDotsWave from "./components/ThreeDotsWave/ThreeDotsWave";
 import InputForm from "./components/InputForm/InputForm";
 import twitterLogo from './assets/twitter-logo.svg';
@@ -17,14 +17,7 @@ import { CONTRACT_ADDRESS, contract_abi, usedChain, tld } from './constants'
 - alter css to be responsive and adeuqate to small devices
 - add loading animaion during fetching ?
 - add framer motion
-- add SendEth/sendMATIC to transfer using the resolved names from the domain
-- add loading animation to send eth
-- add tld to send MATIC modal
-- add underline send MATica domain
 - rename send eth to send matic
-- alter send matica icon to cash symbol
-- check hover css to edit and cash icon
-- add address to domain UI information
 */
 // Constants
 const TWITTER_HANDLE = '_buildspace';
@@ -361,12 +354,11 @@ const App = () => {
 						editing={editing}
 						setEditing={setEditing}
 						fetchMints={fetchMints} />}
-				<button onClick={handleOpenModal}>Send MATIC</button>
-				{galleryAvailable && 
-				<SendEthModal 
-					open={openModal} 
-					handleOpen={handleOpenModal} 
-					handleClose={handleCloseModal} 
+				{galleryAvailable &&
+				<SendMaticModal
+					open={openModal}
+					handleOpen={handleOpenModal}
+					handleClose={handleCloseModal}
 					domain={domain}
 					receiverAddress={receiverAddress} />
 				}
