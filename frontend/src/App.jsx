@@ -9,14 +9,16 @@ import ThreeDotsWave from "./components/ThreeDotsWave/ThreeDotsWave";
 import InputForm from "./components/InputForm/InputForm";
 import twitterLogo from './assets/twitter-logo.svg';
 import { networks } from './utils/networks';
-import { connectWallet, checkIfWalletIsConnected, checkCurrentNetwork, handleChangedAccount, handleChangedChain, switchNetwork, sendNativeToken } from './utils'
+import { checkIfWalletIsConnected, checkCurrentNetwork, checkForWallet } from './utils'
 import { ethers } from "ethers";
 import { CONTRACT_ADDRESS, contract_abi, usedChain, tld } from './constants'
 
 /*TODO
+- deploy new contract and update frontend to use it
 - alter css to be responsive and adeuqate to small devices
 - add loading animaion during fetching ?
 - add framer motion
+	- fix blink bug
 - rename send eth to send matic
 */
 // Constants
@@ -302,11 +304,11 @@ const App = () => {
 	useEffect(() => {
 		try {
 			const { ethereum } = window
-
 			if (!ethereum) {
-				alert("Get MetaMask -> https://metamask.io/");
+				//alert("Get MetaMask -> https://metamask.io/");
 				return;
 			}
+
 			checkIfWalletIsConnected(ethereum, setCurrentAccount)
 			checkCurrentNetwork(ethereum, setNetwork, networks)
 			ethereum.on('accountsChanged', () => {
@@ -341,10 +343,27 @@ const App = () => {
 						</div>
 					</header>
 				</div>
-				{/*Check if user is in the correct network*/}
-				{(network !== usedChain.chainName) && <SwitchNetworkContainer />}
+				{(!(checkForWallet()))
+					&& <div>
+						<h1>Get Metamask and join the fun</h1>
+						<a className="footer-text"
+							href="https://metamask.io/"
+							target="_blank"
+							rel="noreferrer">https://metamask.io/</a>
+					</div>}
+				{(currentAccount && network !== usedChain.chainName) && <SwitchNetworkContainer />}
 				{/*check if user is connected and in the correct network */}
 				{(!currentAccount && (network === usedChain.chainName)) && <ConnectWalletContainer setCurrentAccount={setCurrentAccount} />}
+				{galleryAvailable &&
+					<SendMaticModal
+						open={openModal}
+						handleOpen={handleOpenModal}
+						handleClose={handleCloseModal}
+						domain={domain}
+						receiverAddress={receiverAddress} />
+				}
+				{(currentAccount && (network === usedChain.chainName))
+				&&<div className="content-container">
 				{(currentAccount && (network === usedChain.chainName))
 					&& <InputForm
 						domain={domain}
@@ -354,20 +373,15 @@ const App = () => {
 						editing={editing}
 						setEditing={setEditing}
 						fetchMints={fetchMints} />}
-				{galleryAvailable &&
-				<SendMaticModal
-					open={openModal}
-					handleOpen={handleOpenModal}
-					handleClose={handleCloseModal}
-					domain={domain}
-					receiverAddress={receiverAddress} />
-				}
+
 				{galleryAvailable
 					&& <MintsGallery
 						mints={mints}
 						currentAccount={currentAccount}
 						editRecord={editRecord}
 						callSendEth={callSendEth} />}
+				</div> }
+
 				<div className="footer-container">
 					<img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
 					<a className="footer-text"

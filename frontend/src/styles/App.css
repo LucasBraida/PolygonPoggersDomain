@@ -21,10 +21,19 @@ p {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap:15px
 }
 
 .header-container {
   padding-top: 30px;
+}
+
+.content-container{
+  flex-grow: 2;
+  padding-top: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
 header{
@@ -67,9 +76,7 @@ header{
   margin-top: 10px;
 }
 
-.content-container {
-  background-color: #a200d6;
-}
+
 
 .cta-button {
   height: 45px;

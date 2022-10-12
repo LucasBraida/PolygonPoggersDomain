@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { ethers } from "ethers";
+import {motion} from 'framer-motion'
 import { tld, CONTRACT_ADDRESS, contract_abi } from '../../constants'
 import ThreeDotsWave from '../ThreeDotsWave/ThreeDotsWave'
 import './InputForm.css'
@@ -83,7 +84,10 @@ const InputForm = ({ domain, setDomain, record, setRecord, editing, setEditing, 
         }
     }
     return (
-        <div className="form-container">
+        <motion.div className="form-container"
+        whileInView={{opacity: [0,0,1], y: [100,50,0]}}
+        transition={{duration: 0.5}}
+            >
             <div className="first-row">
                 <input
                     type="text"
@@ -125,7 +129,7 @@ const InputForm = ({ domain, setDomain, record, setRecord, editing, setEditing, 
                 </button>
             )}
 
-        </div>
+        </motion.div>
     )
 }
 

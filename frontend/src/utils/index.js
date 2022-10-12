@@ -7,7 +7,7 @@ import {handleChangedChain} from './handleChangedChain'
 import {switchNetwork} from './switchNetwork'
 import {sendNativeToken} from './sendNativeToken'
 import {stringOfNumberWithDecimal} from './stringOfNumberWithDecimal'
-
+import {checkForWallet} from './checkForWallet'
 
 export {
     networks,
@@ -18,5 +18,6 @@ export {
     handleChangedChain,
     switchNetwork,
     sendNativeToken,
-    stringOfNumberWithDecimal
+    stringOfNumberWithDecimal,
+    checkForWallet
 }

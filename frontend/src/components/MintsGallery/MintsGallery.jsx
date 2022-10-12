@@ -3,9 +3,13 @@ import {CONTRACT_ADDRESS, tld} from '../../constants'
 import pencilIcon from '../../assets/pencil.png'
 import moneyIcon from '../../assets/money.png'
 import './MintsGallery.css'
+import {motion} from 'framer-motion'
 const MintsGallery = ({mints, currentAccount, editRecord, callSendEth}) => {
   return (
-    <div className="mint-container">
+    <motion.div className="mint-container"
+     whileInView={{opacity: [0,0,1], y: [100,50,0]}}
+        transition={{duration: 0.5}}
+    >
         <p className="subtitle"> Recently minted domains!</p>
         <div className="mint-list">
             {mints.map((mint) => {
@@ -30,7 +34,7 @@ const MintsGallery = ({mints, currentAccount, editRecord, callSendEth}) => {
                     </div>)
             })}
         </div>
-    </div>)
+    </motion.div>)
 }
 
 export default MintsGallery

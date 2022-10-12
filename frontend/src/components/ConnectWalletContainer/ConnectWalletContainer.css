@@ -26,3 +26,7 @@
     width: 60%;
     animation: gradient-animation 4s ease infinite;
   }
+
+.margin_bottom {
+  margin-bottom: 10px;
+}
