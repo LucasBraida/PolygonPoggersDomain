@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { ethers } from "ethers";
+import { motion } from 'framer-motion'
 import './styles/App.css';
 import MintsGallery from "./components/MintsGallery/MintsGallery";
 import WalletHandle from "./components/WalletHandle/WalletHandle";
@@ -10,7 +12,7 @@ import InputForm from "./components/InputForm/InputForm";
 import twitterLogo from './assets/twitter-logo.svg';
 import { networks } from './utils/networks';
 import { checkIfWalletIsConnected, checkCurrentNetwork, checkForWallet } from './utils'
-import { ethers } from "ethers";
+
 import { CONTRACT_ADDRESS, contract_abi, usedChain, tld } from './constants'
 
 /*TODO
@@ -329,6 +331,34 @@ const App = () => {
 		}
 	}, [currentAccount, network]);
 
+	const loadingContainerVariants = {
+		start: {
+			transition: {
+				staggerChildren: 1
+			}
+		},
+		end: {
+			transition: {
+				staggerChildren: 1
+			}
+		}
+	};
+
+	const container = {
+		hidden: { opacity: 0 },
+		show: {
+		  opacity: 1,
+		  transition: {
+			staggerChildren: 2
+		  }
+		}
+	  }
+
+	  const item = {
+		hidden: { opacity: 0 },
+		show: { opacity: 1 }
+	  }
+
 	return (
 		<div className="App">
 			<div className="container">
@@ -363,24 +393,33 @@ const App = () => {
 						receiverAddress={receiverAddress} />
 				}
 				{(currentAccount && (network === usedChain.chainName))
-				&&<div className="content-container">
-				{(currentAccount && (network === usedChain.chainName))
-					&& <InputForm
-						domain={domain}
-						setDomain={setDomain}
-						record={record}
-						setRecord={setRecord}
-						editing={editing}
-						setEditing={setEditing}
-						fetchMints={fetchMints} />}
-
-				{galleryAvailable
-					&& <MintsGallery
-						mints={mints}
-						currentAccount={currentAccount}
-						editRecord={editRecord}
-						callSendEth={callSendEth} />}
-				</div> }
+					&& <motion.div className="content-container"
+						// variants={loadingContainerVariants}
+						// initial="start"
+						// animate="end"
+						//transition={{staggerChildren: 1}}
+						variants={container}
+						initial='hidden'
+						animate='show'
+						>
+						<InputForm
+							domain={domain}
+							setDomain={setDomain}
+							record={record}
+							setRecord={setRecord}
+							editing={editing}
+							setEditing={setEditing}
+							fetchMints={fetchMints} />
+						<motion.div
+							variants={item}
+						>Testando</motion.div>
+						{galleryAvailable
+							&& <MintsGallery
+								mints={mints}
+								currentAccount={currentAccount}
+								editRecord={editRecord}
+								callSendEth={callSendEth} />}
+					</motion.div>}
 
 				<div className="footer-container">
 					<img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />

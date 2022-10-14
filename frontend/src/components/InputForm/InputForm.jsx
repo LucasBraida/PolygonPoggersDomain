@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { ethers } from "ethers";
-import {motion} from 'framer-motion'
+import { motion } from 'framer-motion'
 import { tld, CONTRACT_ADDRESS, contract_abi } from '../../constants'
 import ThreeDotsWave from '../ThreeDotsWave/ThreeDotsWave'
 import './InputForm.css'
@@ -83,21 +83,27 @@ const InputForm = ({ domain, setDomain, record, setRecord, editing, setEditing, 
             console.log(error);
         }
     }
+
+      const item = {
+        hidden: { opacity: 0 },
+        show: { opacity: 1 }
+      }
+
+
     return (
         <motion.div className="form-container"
-        whileInView={{opacity: [0,0,1], y: [100,50,0]}}
-        transition={{duration: 0.5}}
-            >
+            variants={item}
+        >
             <div className="first-row">
                 <input
                     type="text"
                     value={domain}
                     placeholder='domain'
                     onChange={e => {
-                        if(!editing){
+                        if (!editing) {
                             setDomain(e.target.value)
                         }
-                        }}
+                    }}
                 />
                 <p className='tld'> {tld} </p>
             </div>

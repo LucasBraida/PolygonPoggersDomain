@@ -5,10 +5,17 @@ import moneyIcon from '../../assets/money.png'
 import './MintsGallery.css'
 import {motion} from 'framer-motion'
 const MintsGallery = ({mints, currentAccount, editRecord, callSendEth}) => {
-  return (
+    const item = {
+        hidden: { opacity: 0 },
+        show: { opacity: 1 }
+      }
+
+    return (
     <motion.div className="mint-container"
-     whileInView={{opacity: [0,0,1], y: [100,50,0]}}
-        transition={{duration: 0.5}}
+    // initial={{opacity: 0}}
+    // whileInView={{ y: [200, 0], opacity: 1 }}
+    // transition={{ duration: 0.85, ease: 'easeOut' }}
+    variants={item}
     >
         <p className="subtitle"> Recently minted domains!</p>
         <div className="mint-list">
