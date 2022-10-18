@@ -12,3 +12,7 @@ code {
     monospace;
 }
 
+#root {
+  height: 100vh;
+}
+

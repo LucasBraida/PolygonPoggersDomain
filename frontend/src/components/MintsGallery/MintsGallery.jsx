@@ -4,7 +4,7 @@ import pencilIcon from '../../assets/pencil.png'
 import moneyIcon from '../../assets/money.png'
 import './MintsGallery.css'
 import {motion} from 'framer-motion'
-const MintsGallery = ({mints, currentAccount, editRecord, callSendEth}) => {
+const MintsGallery = ({mints, currentAccount, editRecord, callSendMatic}) => {
     const item = {
         hidden: { opacity: 0 },
         show: { opacity: 1 }
@@ -32,7 +32,7 @@ const MintsGallery = ({mints, currentAccount, editRecord, callSendEth}) => {
                                     <img className="edit-icon" src={pencilIcon} alt="Edit button" />
                                 </button>
                                 :
-                                <button className="edit-button" onClick={() => callSendEth(mint.name, mint.owner)}>
+                                <button className="edit-button" onClick={() => callSendMatic(mint.name, mint.owner)}>
                                     <img className="edit-icon" src={moneyIcon} alt="Edit button" />
                                 </button>
                             }

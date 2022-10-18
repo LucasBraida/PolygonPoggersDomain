@@ -21,7 +21,6 @@ import { CONTRACT_ADDRESS, contract_abi, usedChain, tld } from './constants'
 - add loading animaion during fetching ?
 - add framer motion
 	- fix blink bug
-- rename send eth to send matic
 */
 // Constants
 const TWITTER_HANDLE = '_buildspace';
@@ -297,7 +296,7 @@ const App = () => {
 		setDomain(name);
 	}
 
-	const callSendEth = (domain, receiverAddress) => {
+	const callSendMatic = (domain, receiverAddress) => {
 		setDomain(domain)
 		setReceiverAddress(receiverAddress)
 		handleOpenModal()
@@ -347,17 +346,17 @@ const App = () => {
 	const container = {
 		hidden: { opacity: 0 },
 		show: {
-		  opacity: 1,
-		  transition: {
-			staggerChildren: 2
-		  }
+			opacity: 1,
+			transition: {
+				staggerChildren: 2
+			}
 		}
-	  }
+	}
 
-	  const item = {
+	const item = {
 		hidden: { opacity: 0 },
 		show: { opacity: 1 }
-	  }
+	}
 
 	return (
 		<div className="App">
@@ -366,7 +365,11 @@ const App = () => {
 					<header>
 						<div className="left">
 							<p className="title">🐸 Polygon Poggers Domains</p>
-							<p className="subtitle">Your immortal API on the blockchain!</p>
+							<p className="subtitle">Your immortal API on the blockchain!
+							Mint a nice domain, set a cool record and even transfer some coins to other domain owner!
+							</p>
+							<p className="explanation">	You buy one and it's yours to trade in any NFT market, but a little part is transfered to the contract 
+							(just to keep our lights on 🙏)</p>
 						</div>
 						<div className="right">
 							<WalletHandle currentAccount={currentAccount} network={network} />
@@ -381,7 +384,10 @@ const App = () => {
 							target="_blank"
 							rel="noreferrer">https://metamask.io/</a>
 					</div>}
-				{(currentAccount && network !== usedChain.chainName) && <SwitchNetworkContainer />}
+					<div className="content-container">
+					{(currentAccount && network !== usedChain.chainName) && <SwitchNetworkContainer />}
+					</div>
+				
 				{/*check if user is connected and in the correct network */}
 				{(!currentAccount && (network === usedChain.chainName)) && <ConnectWalletContainer setCurrentAccount={setCurrentAccount} />}
 				{galleryAvailable &&
@@ -401,7 +407,7 @@ const App = () => {
 						variants={container}
 						initial='hidden'
 						animate='show'
-						>
+					>
 						<InputForm
 							domain={domain}
 							setDomain={setDomain}
@@ -410,15 +416,24 @@ const App = () => {
 							editing={editing}
 							setEditing={setEditing}
 							fetchMints={fetchMints} />
-						<motion.div
+						{/* <motion.div
 							variants={item}
-						>Testando</motion.div>
-						{galleryAvailable
+						>Testando</motion.div> */}
+						<motion.div variants={item}>
+							{galleryAvailable
+								&& <MintsGallery
+									mints={mints}
+									currentAccount={currentAccount}
+									editRecord={editRecord}
+									callSendMatic={callSendMatic} />}
+
+						</motion.div>
+						{/* {galleryAvailable
 							&& <MintsGallery
 								mints={mints}
 								currentAccount={currentAccount}
 								editRecord={editRecord}
-								callSendEth={callSendEth} />}
+								callSendMatic={callSendMatic} />} */}
 					</motion.div>}
 
 				<div className="footer-container">
