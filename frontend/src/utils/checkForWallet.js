@@ -3,7 +3,6 @@ export const checkForWallet = () => {
         const { ethereum } = window
 
 			if (!ethereum) {
-				//alert("Get MetaMask -> https://metamask.io/");
 				return false
 			} else {
                 return true

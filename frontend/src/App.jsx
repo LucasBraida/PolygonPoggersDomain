@@ -359,46 +359,99 @@ const App = () => {
 	}
 
 	return (
-		<div className="App">
-			<div className="container">
-				<div className="header-container">
-					<header>
-						<div className="left">
-							<p className="title">🐸 Polygon Poggers Domains</p>
-							<p className="subtitle">Your immortal API on the blockchain!
+		<div className="App container">
+			{/* <div className="container"> */}
+				{/* <div className="header-container"> */}
+				<header className="header-container">
+					<div className="header-container-info">
+						<p className="title">🐸 Polygon Poggers Domains</p>
+						<p className="subtitle">Your immortal API on the blockchain!
 							Mint a nice domain, set a cool record and even transfer some coins to other domain owner!
-							</p>
-							<p className="explanation">	You buy one and it's yours to trade in any NFT market, but a little part is transfered to the contract 
+						</p>
+						<p className="explanation">	You buy one and it's yours to trade in any NFT market, but a little part is transfered to the contract
 							(just to keep our lights on 🙏)</p>
-						</div>
-						<div className="right">
-							<WalletHandle currentAccount={currentAccount} network={network} />
-						</div>
-					</header>
-				</div>
-				{(!(checkForWallet()))
-					&& <div>
-						<h1>Get Metamask and join the fun</h1>
-						<a className="footer-text"
-							href="https://metamask.io/"
-							target="_blank"
-							rel="noreferrer">https://metamask.io/</a>
-					</div>}
-					<div className="content-container">
-					{(currentAccount && network !== usedChain.chainName) && <SwitchNetworkContainer />}
 					</div>
-				
+					<div className="header-container-wh">
+						<WalletHandle currentAccount={currentAccount} network={network} />
+					</div>
+				</header>
+				<main className="content-container">
+					{(!(checkForWallet()))
+						&& <div>
+							<h1>Get Metamask and join the fun</h1>
+							<a className="footer-text"
+								href="https://metamask.io/"
+								target="_blank"
+								rel="noreferrer">https://metamask.io/</a>
+						</div>}
+					{currentAccount
+						? <>
+							{(network !== usedChain.chainName) && <SwitchNetworkContainer />}
+							{(network === usedChain.chainName)
+								&& <motion.div className="content-container"
+									variants={container}
+									initial='hidden'
+									animate='show'
+								>
+									<InputForm
+										domain={domain}
+										setDomain={setDomain}
+										record={record}
+										setRecord={setRecord}
+										editing={editing}
+										setEditing={setEditing}
+										fetchMints={fetchMints} />
+
+									<motion.div variants={item}>
+										{galleryAvailable
+											&& <MintsGallery
+												mints={mints}
+												currentAccount={currentAccount}
+												editRecord={editRecord}
+												callSendMatic={callSendMatic} />}
+
+									</motion.div>
+									{galleryAvailable &&
+										<SendMaticModal
+											open={openModal}
+											handleOpen={handleOpenModal}
+											handleClose={handleCloseModal}
+											domain={domain}
+											receiverAddress={receiverAddress} />
+									}
+
+								</motion.div>}
+						</>
+						: <>
+							<ConnectWalletContainer setCurrentAccount={setCurrentAccount} />
+						</>}
+				</main>
+				<footer className="footer-container">
+					<img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
+					<a className="footer-text"
+						href={TWITTER_LINK}
+						target="_blank"
+						rel="noreferrer">
+						{`built with @${TWITTER_HANDLE}`}
+					</a>
+				</footer>
+				{/* </div> */}
+
+				{/* <div className="content-container">
+					{(currentAccount && network !== usedChain.chainName) && <SwitchNetworkContainer />}
+				</div> */}
+
 				{/*check if user is connected and in the correct network */}
-				{(!currentAccount && (network === usedChain.chainName)) && <ConnectWalletContainer setCurrentAccount={setCurrentAccount} />}
-				{galleryAvailable &&
+				{/* {(!currentAccount && (network === usedChain.chainName)) && <ConnectWalletContainer setCurrentAccount={setCurrentAccount} />} */}
+				{/* {galleryAvailable &&
 					<SendMaticModal
 						open={openModal}
 						handleOpen={handleOpenModal}
 						handleClose={handleCloseModal}
 						domain={domain}
 						receiverAddress={receiverAddress} />
-				}
-				{(currentAccount && (network === usedChain.chainName))
+				} */}
+				{/* {(currentAccount && (network === usedChain.chainName))
 					&& <motion.div className="content-container"
 						// variants={loadingContainerVariants}
 						// initial="start"
@@ -416,9 +469,7 @@ const App = () => {
 							editing={editing}
 							setEditing={setEditing}
 							fetchMints={fetchMints} />
-						{/* <motion.div
-							variants={item}
-						>Testando</motion.div> */}
+
 						<motion.div variants={item}>
 							{galleryAvailable
 								&& <MintsGallery
@@ -428,26 +479,102 @@ const App = () => {
 									callSendMatic={callSendMatic} />}
 
 						</motion.div>
-						{/* {galleryAvailable
-							&& <MintsGallery
-								mints={mints}
-								currentAccount={currentAccount}
-								editRecord={editRecord}
-								callSendMatic={callSendMatic} />} */}
-					</motion.div>}
 
-				<div className="footer-container">
-					<img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
-					<a className="footer-text"
-						href={TWITTER_LINK}
-						target="_blank"
-						rel="noreferrer">
-						{`built with @${TWITTER_HANDLE}`}
-					</a>
-				</div>
-			</div>
+					</motion.div>} */}
+
+
+			{/* </div> */}
 		</div>
 	);
 };
 
 export default App;
+
+{/* <div className="App">
+			<div className="container">
+				<div className="header-container">
+					<header>
+						<div className="left">
+							<p className="title">🐸 Polygon Poggers Domains</p>
+							<p className="subtitle">Your immortal API on the blockchain!
+								Mint a nice domain, set a cool record and even transfer some coins to other domain owner!
+							</p>
+							<p className="explanation">	You buy one and it's yours to trade in any NFT market, but a little part is transfered to the contract
+								(just to keep our lights on 🙏)</p>
+						</div>
+						<div className="right">
+							<WalletHandle currentAccount={currentAccount} network={network} />
+						</div>
+					</header>
+				</div>
+				{(!(checkForWallet()))
+					&& <div>
+						<h1>Get Metamask and join the fun</h1>
+						<a className="footer-text"
+							href="https://metamask.io/"
+							target="_blank"
+							rel="noreferrer">https://metamask.io/</a>
+					</div>}
+				<div className="content-container">
+					{(currentAccount && network !== usedChain.chainName) && <SwitchNetworkContainer />}
+				</div>
+
+				{/*check if user is connected and in the correct network */}
+			// 	{(!currentAccount && (network === usedChain.chainName)) && <ConnectWalletContainer setCurrentAccount={setCurrentAccount} />}
+			// 	{galleryAvailable &&
+			// 		<SendMaticModal
+			// 			open={openModal}
+			// 			handleOpen={handleOpenModal}
+			// 			handleClose={handleCloseModal}
+			// 			domain={domain}
+			// 			receiverAddress={receiverAddress} />
+			// 	}
+			// 	{(currentAccount && (network === usedChain.chainName))
+			// 		&& <motion.div className="content-container"
+			// 			// variants={loadingContainerVariants}
+			// 			// initial="start"
+			// 			// animate="end"
+			// 			//transition={{staggerChildren: 1}}
+			// 			variants={container}
+			// 			initial='hidden'
+			// 			animate='show'
+			// 		>
+			// 			<InputForm
+			// 				domain={domain}
+			// 				setDomain={setDomain}
+			// 				record={record}
+			// 				setRecord={setRecord}
+			// 				editing={editing}
+			// 				setEditing={setEditing}
+			// 				fetchMints={fetchMints} />
+			// 			{/* <motion.div
+			// 				variants={item}
+			// 			>Testando</motion.div> */}
+			// 			<motion.div variants={item}>
+			// 				{galleryAvailable
+			// 					&& <MintsGallery
+			// 						mints={mints}
+			// 						currentAccount={currentAccount}
+			// 						editRecord={editRecord}
+			// 						callSendMatic={callSendMatic} />}
+
+			// 			</motion.div>
+			// 			{/* {galleryAvailable
+			// 				&& <MintsGallery
+			// 					mints={mints}
+			// 					currentAccount={currentAccount}
+			// 					editRecord={editRecord}
+			// 					callSendMatic={callSendMatic} />} */}
+			// 		</motion.div>}
+
+			// 	<div className="footer-container">
+			// 		<img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
+			// 		<a className="footer-text"
+			// 			href={TWITTER_LINK}
+			// 			target="_blank"
+			// 			rel="noreferrer">
+			// 			{`built with @${TWITTER_HANDLE}`}
+			// 		</a>
+			// 	</div>
+			// </div>
+			// 				</div> */}
