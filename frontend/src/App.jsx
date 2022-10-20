@@ -10,6 +10,8 @@ import SendMaticModal from "./components/SendMaticModal/SendMaticModal";
 import ThreeDotsWave from "./components/ThreeDotsWave/ThreeDotsWave";
 import InputForm from "./components/InputForm/InputForm";
 import twitterLogo from './assets/twitter-logo.svg';
+import poggersIcon	from './assets/poggers.png'
+import prayHandsIcon from './assets/prayHands.png'
 import { networks } from './utils/networks';
 import { checkIfWalletIsConnected, checkCurrentNetwork, checkForWallet } from './utils'
 
@@ -19,8 +21,8 @@ import { CONTRACT_ADDRESS, contract_abi, usedChain, tld } from './constants'
 - deploy new contract and update frontend to use it
 - alter css to be responsive and adeuqate to small devices
 - add loading animaion during fetching ?
-- add framer motion
-	- fix blink bug
+- update to use variants from constant
+- clean comments
 */
 // Constants
 const TWITTER_HANDLE = '_buildspace';
@@ -364,18 +366,27 @@ const App = () => {
 				{/* <div className="header-container"> */}
 				<header className="header-container">
 					<div className="header-container-info">
-						<p className="title">🐸 Polygon Poggers Domains</p>
+						<p className="header-container-title">
+							<img alt="Poggers logo" className="header-container-logo" src={poggersIcon} />
+							Polygon Poggers Domains</p>
 						<p className="subtitle">Your immortal API on the blockchain!
 							Mint a nice domain, set a cool record and even transfer some coins to other domain owner!
 						</p>
-						<p className="explanation">	You buy one and it's yours to trade in any NFT market, but a little part is transfered to the contract
-							(just to keep our lights on 🙏)</p>
+						<p className="explanation">You buy one and it's yours to trade in any NFT market, but a little part is transfered to the contract (
+							<p className="header-container-explanation">
+							just to keep our lights on <img alt="Pray Hands Icon" className="header-container-prayIcon" src={prayHandsIcon} />)
+							</p>
+
+						</p>
 					</div>
 					<div className="header-container-wh">
 						<WalletHandle currentAccount={currentAccount} network={network} />
 					</div>
 				</header>
-				<main className="content-container">
+				<motion.main className="content-container"
+				variants={container}
+				initial='hidden'
+				animate='show'>
 					{(!(checkForWallet()))
 						&& <div>
 							<h1>Get Metamask and join the fun</h1>
@@ -425,7 +436,7 @@ const App = () => {
 						: <>
 							<ConnectWalletContainer setCurrentAccount={setCurrentAccount} />
 						</>}
-				</main>
+				</motion.main>
 				<footer className="footer-container">
 					<img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
 					<a className="footer-text"
