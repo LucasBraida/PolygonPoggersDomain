@@ -1,13 +1,16 @@
 import './ConnectWalletContainer.css'
 import React from 'react'
 import {connectWallet} from '../../utils'
+import gifPoggers from '../../assets/giphy_poggers.gif'
 
 const ConnectWalletContainer = ({setCurrentAccount}) => {
     console.log("I am being rendered")
   return (
     <div className="connect-wallet-container">
 
-			<img src="https://media3.giphy.com/media/WCcdypx0dwswG1Gs95/giphy.gif?cid=&:ref-=´90b7611f99c784cd154379700e1f16ea68f9bf13ab2f2ba&rid=giphy.gif&ct=g" alt="Poggers Gif from GIPHY"></img>
+			{/* <img src="https://media3.giphy.com/media/WCcdypx0dwswG1Gs95/giphy.gif?cid=&:ref-=´90b7611f99c784cd154379700e1f16ea68f9bf13ab2f2ba&rid=giphy.gif&ct=g" alt="Poggers Gif from GIPHY"></img>
+			 */}
+			<img src={gifPoggers} alt="Poggers Gif from GIPHY"></img>
 			<p className='margin_bottom'>
 				<a className="footer-text" href="https://giphy.com/gifs/wow-wtf-good-WCcdypx0dwswG1Gs95">via GIPHY</a>
 			</p>

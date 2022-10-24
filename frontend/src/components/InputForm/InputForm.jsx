@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import { ethers } from "ethers";
 import { motion } from 'framer-motion'
-import { tld, CONTRACT_ADDRESS, contract_abi } from '../../constants'
+import { tld, CONTRACT_ADDRESS, contract_abi, itemVariant } from '../../constants'
 import ThreeDotsWave from '../ThreeDotsWave/ThreeDotsWave'
 import './InputForm.css'
 const InputForm = ({ domain, setDomain, record, setRecord, editing, setEditing, fetchMints }) => {
     const [loading, setLoading] = useState(false)
+    //set to fetach from contract when rendered with use effect
+    const [maxDomainSize, setMaxDomainSize] = useState(10)
+    const [maxRecordSize, setMaxRecordSize] = useState(30)
     const updateDomain = async () => {
         if (!record || !domain) { return }
         setLoading(true);
@@ -81,18 +84,22 @@ const InputForm = ({ domain, setDomain, record, setRecord, editing, setEditing, 
         catch (error) {
             setLoading(false)
             console.log(error);
+            alert('something went wrong! Check if you have enough funds and are inputing the correct information')
         }
     }
 
-      const item = {
-        hidden: { opacity: 0 },
-        show: { opacity: 1 }
-      }
 
 
+    const checkSize = (variable, size) => {
+        if(variable.length <= size){
+            return true
+        } else {
+            return false
+        }
+    }
     return (
         <motion.div className="form-container"
-            variants={item}
+            variants={itemVariant}
         >
             <div className="first-row">
                 <input
@@ -101,7 +108,10 @@ const InputForm = ({ domain, setDomain, record, setRecord, editing, setEditing, 
                     placeholder='domain'
                     onChange={e => {
                         if (!editing) {
-                            setDomain(e.target.value)
+                            if(checkSize(e.target.value, maxDomainSize)){
+                                setDomain(e.target.value)
+
+                            }
                         }
                     }}
                 />
@@ -112,7 +122,12 @@ const InputForm = ({ domain, setDomain, record, setRecord, editing, setEditing, 
                 type="text"
                 value={record}
                 placeholder='record'
-                onChange={e => setRecord(e.target.value)}
+                onChange={e => {
+                    if(checkSize(e.target.value, maxRecordSize)){
+                        setRecord(e.target.value)
+                    }
+
+                }}
             />
             {/* If the editing variable is true, return the "Set record" and "Cancel" button */}
             {editing ? (
