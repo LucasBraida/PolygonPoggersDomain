@@ -52,6 +52,22 @@ contract PolygonPoggersDomains is ERC721URIStorage, Ownable {
         domainMaxSize = _domainMaxSize;
         recordMaxSize = _recordMaxSize;
     }
+    function BTS(string memory _text) public pure returns (string memory) {
+        uint len;
+        uint i = 0;
+        uint bytelength = bytes(_text).length;
+        bytes memory nb;
+        bytes1 b;
+        // nb = bytes.concat(nb, bytes(_text)[0]);
+        // nb = bytes.concat(nb, bytes(_text)[1]);
+        for(i = 0; i < bytelength; i++) {
+            // b = bytes(_text)[i];
+            if(bytes(_text)[i] != 0x20) {
+                nb = bytes.concat(nb, bytes(_text)[i]);
+            }
+        }
+        return string(nb);
+    }
     /// @dev setPrice() sets domain price.
     /// @param _price - new domain price
     function setPrice(uint _price) public onlyOwner {
@@ -146,6 +162,7 @@ contract PolygonPoggersDomains is ERC721URIStorage, Ownable {
     function checkDomainAvailability(string memory _name) public view returns (bool){
         return !(domains[_name] != address(0));
     }
+
     /// @dev register() mints a new domain
     /// @param _name - domain name
     function register(string memory _name) public payable {
