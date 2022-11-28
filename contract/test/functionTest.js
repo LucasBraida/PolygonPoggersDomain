@@ -51,7 +51,7 @@ describe("Deploy contracts", function () {
             })).to.be.revertedWithCustomError(
                 this.domainContract,
                 "AlreadyRegistered"
-              );
+            );
         })
 
         it('Should not allow to mint a domain longer than the max size', async function () {
@@ -60,7 +60,7 @@ describe("Deploy contracts", function () {
             })).to.be.revertedWithCustomError(
                 this.domainContract,
                 "InvalidName"
-              );
+            );
         })
 
         // it("Should accept withdrawals", async function () {

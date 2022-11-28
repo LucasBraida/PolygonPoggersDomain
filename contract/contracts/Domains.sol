@@ -4,6 +4,10 @@
 - add update information when an NFT is traded on another plataform, like opensea
     update domains mapping
 - add a fee for the trade
+- create function to check and remove empty spaces
+    -check gas cost with removal
+    -check gas cost with only spoting and reverting
+    
 */
 pragma solidity ^0.8.10;
 import {StringUtils} from "./libraries/StringUtils.sol";
