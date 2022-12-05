@@ -1,6 +1,7 @@
 require("@nomicfoundation/hardhat-toolbox");
 require("dotenv").config({ path: ".env" });
 require("@nomiclabs/hardhat-etherscan");
+require("hardhat-gas-reporter");
 
 const ALCHEMY_API_KEY_URL = process.env.ALCHEMY_API_KEY_URL;
 
@@ -20,4 +21,9 @@ module.exports = {
       polygonMumbai: POLYGONSCAN_KEY,
     },
   },
+  gasReporter: {
+    enabled: true,
+    currency: 'CHF',
+    gasPrice: 21
+  }
 };

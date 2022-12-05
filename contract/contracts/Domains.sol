@@ -1,16 +1,8 @@
 // SPDX-License-Identifier: MIT
-/*TODO
-- add tests to everything
-- add update information when an NFT is traded on another plataform, like opensea
-    update domains mapping
-- add a fee for the trade
-- create function to check and remove empty spaces
-    -check gas cost with removal
-    -check gas cost with only spoting and reverting
-    
-*/
+
 pragma solidity ^0.8.10;
 import {StringUtils} from "./libraries/StringUtils.sol";
+import {EmptySpaceChecker} from './libraries/EmptySpaceChecker.sol';
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
@@ -23,6 +15,7 @@ contract PolygonPoggersDomains is ERC721URIStorage, Ownable {
     error InvalidName(string name);
     error InvalidRecordSize();
     error NotMininumPriceValue();
+    error DomainWithEmptySpaces();
 
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
@@ -43,6 +36,7 @@ contract PolygonPoggersDomains is ERC721URIStorage, Ownable {
     }
     //Domain to owner
     mapping(string => address) public domains;
+    //Domain to record
     mapping(string => string) public records;
     mapping(string => uint) public domainToTokenID;
     mapping(uint => string) public tokenIDToDomain;
@@ -56,37 +50,26 @@ contract PolygonPoggersDomains is ERC721URIStorage, Ownable {
         domainMaxSize = _domainMaxSize;
         recordMaxSize = _recordMaxSize;
     }
-    function BTS(string memory _text) public pure returns (string memory) {
-        uint len;
-        uint i = 0;
-        uint bytelength = bytes(_text).length;
-        bytes memory nb;
-        bytes1 b;
-        // nb = bytes.concat(nb, bytes(_text)[0]);
-        // nb = bytes.concat(nb, bytes(_text)[1]);
-        for(i = 0; i < bytelength; i++) {
-            // b = bytes(_text)[i];
-            if(bytes(_text)[i] != 0x20) {
-                nb = bytes.concat(nb, bytes(_text)[i]);
-            }
-        }
-        return string(nb);
-    }
+    
+    
     /// @dev setPrice() sets domain price.
     /// @param _price - new domain price
     function setPrice(uint _price) public onlyOwner {
         price = _price;
     }
+
     /// @dev setDomainMaxSize() sets domain maximum size in charaters
     /// @param _domainMaxSize - new domain size
     function setDomainMaxSize(uint _domainMaxSize) public onlyOwner{
         domainMaxSize = _domainMaxSize;
     }
+
     /// @dev setRecordMaxSize() sets record maximum size in charaters
     /// @param _recordMaxSize - new record size
     function setRecordMaxSize(uint _recordMaxSize) public onlyOwner{
         recordMaxSize = _recordMaxSize;
     }
+
     /// @dev generateURIJson() creates the new ToKen URI string with name and record
     /// @param _name - domain name
     /// @param _record - record
@@ -119,6 +102,7 @@ contract PolygonPoggersDomains is ERC721URIStorage, Ownable {
 
         return finalTokenUri;
     }
+
     /// @dev generateURIJson() creates the new ToKen URI string with name and without record
     /// @param _name - domain name
     /// @return Return the token URI
@@ -148,18 +132,21 @@ contract PolygonPoggersDomains is ERC721URIStorage, Ownable {
 
         return finalTokenUri;
     }
+
     /// @dev validDomainSize() checks if the name has a valid domain size
     /// @param _name - domain name
     /// @return Returns true if valid size
     function validDomainSize(string memory _name) public view returns (bool) {
         return StringUtils.strlen(_name) <= domainMaxSize && StringUtils.strlen(_name) > 0;
     }
+
     /// @dev validDomainSize() checks if the record has a valid size
     /// @param _record - domain record
     /// @return Returns true if valid size
     function validRecordSize(string memory _record) public view returns (bool) {
         return StringUtils.strlen(_record) <= recordMaxSize && StringUtils.strlen(_record) > 0;
     }
+
     /// @dev checkDomainAvailability() checks if the domain is already in use
     /// @param _name - domain name
     /// @return Returns true if it's not in use
@@ -170,6 +157,7 @@ contract PolygonPoggersDomains is ERC721URIStorage, Ownable {
     /// @dev register() mints a new domain
     /// @param _name - domain name
     function register(string memory _name) public payable {
+        if(EmptySpaceChecker.check(_name)) revert DomainWithEmptySpaces();
         if(domains[_name] != address(0)) revert AlreadyRegistered();
         if(msg.value < price) revert NotMininumPriceValue();
         if(!validDomainSize(_name)) revert InvalidName(_name);
@@ -184,10 +172,12 @@ contract PolygonPoggersDomains is ERC721URIStorage, Ownable {
 
         _tokenIds.increment();
     }
+
     /// @dev registerWithRecord() mints a new domain with record
     /// @param _name - domain name
     /// @param _record - doamin record
     function registerWithRecord(string memory _name, string memory _record) public payable {
+        if(EmptySpaceChecker.check(_name)) revert DomainWithEmptySpaces();
         if(domains[_name] != address(0)) revert AlreadyRegistered();
         if(msg.value < price) revert NotMininumPriceValue();
         if(!validDomainSize(_name)) revert InvalidName(_name);
@@ -211,6 +201,7 @@ contract PolygonPoggersDomains is ERC721URIStorage, Ownable {
     function getAddress(string memory _name) public view returns (address) {
         return domains[_name];
     }
+
     /// @dev setRecord() sets or alters a domain's record. Only domain's owner can perform a change.
     /// @param _name - domain name
     /// @param _record - new record
@@ -223,12 +214,14 @@ contract PolygonPoggersDomains is ERC721URIStorage, Ownable {
         string memory updatedTokenURI = generateURIJson(_name, _record);
         _setTokenURI(tokenId, updatedTokenURI);
     }
+
     /// @dev getRecord() get record for domain name
     /// @param _name - domain name
     /// @return - Returns domain record
     function getRecord(string memory _name) public view returns (string memory) {
         return records[_name];
     }
+
     /// @dev getAllNames() get all domain names and their respective records and owners
     /// @return - Returns an array of Domains
     function getAllNames() public view returns (Domain [] memory) {
@@ -242,6 +235,17 @@ contract PolygonPoggersDomains is ERC721URIStorage, Ownable {
         }
 
         return allNames;
+    }
+
+    //Alter ERC721 transfer function to update domains mapping
+    function _transfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal virtual override{
+        string memory domainName = tokenIDToDomain[tokenId];
+        domains[domainName] = to;
+        ERC721._transfer(from, to, tokenId);
     }
 
     /// @dev withdraw() get all funds

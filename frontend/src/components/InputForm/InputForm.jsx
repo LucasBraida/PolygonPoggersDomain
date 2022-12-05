@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ethers } from "ethers";
 import { motion } from 'framer-motion'
 import { tld, CONTRACT_ADDRESS, contract_abi, itemVariant } from '../../constants'
@@ -6,9 +6,10 @@ import ThreeDotsWave from '../ThreeDotsWave/ThreeDotsWave'
 import './InputForm.css'
 const InputForm = ({ domain, setDomain, record, setRecord, editing, setEditing, fetchMints }) => {
     const [loading, setLoading] = useState(false)
-    //set to fetach from contract when rendered with use effect
-    const [maxDomainSize, setMaxDomainSize] = useState(10)
-    const [maxRecordSize, setMaxRecordSize] = useState(30)
+    //set to fetch from contract when rendered with use effect
+    const [maxDomainSize, setMaxDomainSize] = useState(0)
+    const [maxRecordSize, setMaxRecordSize] = useState(0)
+
     const updateDomain = async () => {
         if (!record || !domain) { return }
         setLoading(true);
@@ -34,13 +35,10 @@ const InputForm = ({ domain, setDomain, record, setRecord, editing, setEditing, 
         }
         setLoading(false);
     }
+
     const mintDomain = async () => {
         // Don't run if the domain is empty
         if (!domain) { return }
-        // add avilability check when it's set in the contract
-        //add getPrice from contract
-        const price = "0.1";
-        console.log("Minting domain", domain, "with price", price);
         try {
             const { ethereum } = window;
             if (ethereum) {
@@ -48,34 +46,38 @@ const InputForm = ({ domain, setDomain, record, setRecord, editing, setEditing, 
                 const provider = new ethers.providers.Web3Provider(ethereum);
                 const signer = provider.getSigner();
                 const contract = new ethers.Contract(CONTRACT_ADDRESS, contract_abi, signer);
+                const available = await contract.checkDomainAvailability(domain)
+                if(!available){
+                    alert('Domain already in use!')
+                    setDomain('')
+                    setLoading(false)
+                    return
+                }
+                const price = await contract.price()
                 console.log("Going to pop wallet now to pay gas...")
-                const validSize = await contract.validDomainSize(domain);
-                if (validSize) {
-                    let tx = await contract.register(domain, { value: ethers.utils.parseEther(price) });
-                    // Wait for the transaction to be mined
-                    const receipt = await tx.wait();
+                let tx;
+                if (record) {
+                    tx = await contract.registerWithRecord(domain, record, { value: price });
+                } else {
+                    tx = await contract.register(domain, { value: ethers.utils.parseEther(price) });
+                } 
+                // Wait for the transaction to be mined
+                const receipt = await tx.wait();
 
-                    // Check if the transaction was successfully completed
-                    if (receipt.status === 1) {
-                        console.log("Domain minted! https://mumbai.polygonscan.com/tx/" + tx.hash);
+                // Check if the transaction was successfully completed
+                if (receipt.status === 1) {
+                    console.log("Domain minted! https://mumbai.polygonscan.com/tx/" + tx.hash);
 
-                        // Set the record for the domain
-                        tx = await contract.setRecord(domain, record);
-                        await tx.wait();
+                    // Call fetchMints after 2 seconds
+                    setTimeout(() => {
+                        fetchMints();
+                    }, 2000);
 
-                        console.log("Record set! https://mumbai.polygonscan.com/tx/" + tx.hash);
-
-                        // Call fetchMints after 2 seconds
-                        setTimeout(() => {
-                            fetchMints();
-                        }, 2000);
-
-                        setRecord('');
-                        setDomain('');
-                    }
-                    else {
-                        alert("Transaction failed! Please try again");
-                    }
+                    setRecord('');
+                    setDomain('');
+                }
+                else {
+                    alert("Transaction failed! Please try again");
                 }
                 setLoading(false)
 
@@ -91,12 +93,33 @@ const InputForm = ({ domain, setDomain, record, setRecord, editing, setEditing, 
 
 
     const checkSize = (variable, size) => {
-        if(variable.length <= size){
+        if (variable.length <= size) {
             return true
         } else {
             return false
         }
     }
+
+    useEffect(() => {
+        const getMaxSizes = async () => {
+            try {
+                const { ethereum } = window;
+                if (ethereum) {
+                    const provider = new ethers.providers.Web3Provider(ethereum);
+                    const signer = provider.getSigner();
+                    const contract = new ethers.Contract(CONTRACT_ADDRESS, contract_abi, signer);
+                    const domainMS = await contract.domainMaxSize();
+                    const recordMS = await contract.recordMaxSize();
+                    setMaxDomainSize(domainMS)
+                    setMaxRecordSize(recordMS)
+                    console.log(`domainMS: ${domainMS}   recordMS: ${recordMS}`)
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        getMaxSizes()
+    }, [])
     return (
         <motion.div className="form-container"
             variants={itemVariant}
@@ -108,8 +131,9 @@ const InputForm = ({ domain, setDomain, record, setRecord, editing, setEditing, 
                     placeholder='domain'
                     onChange={e => {
                         if (!editing) {
-                            if(checkSize(e.target.value, maxDomainSize)){
-                                setDomain(e.target.value)
+                            if (checkSize(e.target.value, maxDomainSize)) {
+                                const strDomain = e.target.value.replace(/\s/g, '');
+                                setDomain(strDomain)
 
                             }
                         }
@@ -123,7 +147,7 @@ const InputForm = ({ domain, setDomain, record, setRecord, editing, setEditing, 
                 value={record}
                 placeholder='record'
                 onChange={e => {
-                    if(checkSize(e.target.value, maxRecordSize)){
+                    if (checkSize(e.target.value, maxRecordSize)) {
                         setRecord(e.target.value)
                     }
 

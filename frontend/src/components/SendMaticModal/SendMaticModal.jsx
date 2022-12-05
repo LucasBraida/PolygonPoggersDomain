@@ -4,12 +4,14 @@ import ThreeDotsWave from '../ThreeDotsWave/ThreeDotsWave'
 import { stringOfNumberWithDecimal, sendNativeToken } from '../../utils'
 import { tld } from '../../constants'
 import './SendMaticModal.css'
+
 const SendMaticModal = ({ open, handleOpen, handleClose, domain, receiverAddress }) => {
     const [loading, setLoading] = useState(false)
-
+    
     const [sucessfulTx, setSucessfulTx] = useState(false)
-
+    // forwardRef necessary to be compatible with Material Modal
     const Window = forwardRef(({ domain, receiverAddress }, ref) => {
+        
         const [value, setValue] = useState("0")
 
         const visibleAddress = `${receiverAddress.slice(0, 6)}...${receiverAddress.slice(-4)}`
