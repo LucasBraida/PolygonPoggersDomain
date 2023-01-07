@@ -5,7 +5,6 @@ import './styles/App.css';
 import { MintsGallery, WalletHandle, ConnectWalletContainer, SwitchNetworkContainer, SendMaticModal, InputForm } from './components'
 import twitterLogo from './assets/twitter-logo.svg';
 import poggersIcon from './assets/poggers.png'
-import prayHandsIcon from './assets/prayHands.png'
 import { networks } from './utils/networks';
 import { checkIfWalletIsConnected, checkCurrentNetwork, checkForWallet } from './utils'
 
@@ -14,7 +13,6 @@ import { CONTRACT_ADDRESS, contract_abi, usedChain, containerVariant, itemVarian
 
 // Constants
 const TWITTER_HANDLE = '_buildspace';
-const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 
 const App = () => {
 	const [currentAccount, setCurrentAccount] = useState('');
@@ -112,9 +110,9 @@ const App = () => {
 						Mint a nice domain, set a cool record and even transfer some coins to other domain owner!
 					</p>
 					<p className="explanation">You buy one and it's yours to trade in any NFT market, but a little part is transfered to the contract (
-						<p className="header-container-explanation">
+						{/* <p className="header-container-explanation">
 							just to keep our lights on <img alt="Pray Hands Icon" className="header-container-prayIcon" src={prayHandsIcon} />)
-						</p>
+						</p> */}
 
 					</p>
 				</div>
@@ -184,10 +182,10 @@ const App = () => {
 			<footer className="footer-container">
 				<img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
 				<a className="footer-text"
-					href={TWITTER_LINK}
+					href='https://lucasbraida.com'
 					target="_blank"
 					rel="noreferrer">
-					{`built with @${TWITTER_HANDLE}`}
+					{`built by Lucas Braida with @${TWITTER_HANDLE}`}
 				</a>
 			</footer>
 		</div>

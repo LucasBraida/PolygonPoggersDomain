@@ -6,7 +6,7 @@ const SwitchNetworkContainer = () => {
     return (
         <motion.div className="connect-wallet-container"
         variants={itemVariant}>
-            <p>Please connect to the Polygon Mumbai Testnet</p>
+            <p>Please connect to the Polygon Mainnet</p>
             <button className='cta-button mint-button' onClick={() => {
                 try {
                     const { ethereum } = window;

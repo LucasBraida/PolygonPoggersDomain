@@ -1,5 +1,5 @@
 import React, { forwardRef, useState } from 'react'
-import { Modal, Tooltip, Alert } from '@mui/material';
+import { Modal, Tooltip} from '@mui/material';
 import ThreeDotsWave from '../ThreeDotsWave/ThreeDotsWave'
 import { stringOfNumberWithDecimal, sendNativeToken } from '../../utils'
 import { tld } from '../../constants'

@@ -17,7 +17,7 @@ const MintsGallery = ({ mints, currentAccount, editRecord, callSendMatic }) => {
                     return (
                         <div className="mint-item" key={mint.id}>
                             <div className='mint-row'>
-                                <a className="link" href={`https://testnets.opensea.io/assets/mumbai/${CONTRACT_ADDRESS}/${mint.id}`} target="_blank" rel="noopener noreferrer">
+                                <a className="link" href={`https://opensea.io/assets/matic/${CONTRACT_ADDRESS}/${mint.id}`} target="_blank" rel="noopener noreferrer">
                                     <p className="underlined">{' '}{mint.name}{tld}{' '}</p>
                                 </a>
                                 {/* If mint.owner is currentAccount, add an "edit" button*/}
