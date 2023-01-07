@@ -14,19 +14,19 @@ The contract is deployed at **0xCD206Fe32516f26297B7304A3E6EB9a4dC57C7da** verif
 
 # Images
 
-![](https://raw.githubusercontent.com/LucasBraida/PolygonPoggersDomain/main/frontend/PPD_HOMEPAGE.png)
+![](https://raw.githubusercontent.com/LucasBraida/PolygonPoggersDomain/main/frontend/PPD_GALLERY.PNG)
 > Home page
 
-![](https://raw.githubusercontent.com/LucasBraida/PolygonPoggersDomain/main/frontend/PPD_GALLERY.png)
+![](https://raw.githubusercontent.com/LucasBraida/PolygonPoggersDomain/main/frontend/PPD_GALLERY.PNG)
 
 > Gallery
 
-![](https://raw.githubusercontent.com/LucasBraida/PolygonPoggersDomain/main/frontend/PPD_SENDMATIC.png)
+![](https://raw.githubusercontent.com/LucasBraida/PolygonPoggersDomain/main/frontend/PPD_SENDMATIC.PNG)
 
 > Send Matic
 
 
-![](https://raw.githubusercontent.com/LucasBraida/PolygonPoggersDomain/main/frontend/PPD_OPENSEA.png)
+![](https://raw.githubusercontent.com/LucasBraida/PolygonPoggersDomain/main/frontend/PPD_OPENSEA.PNG)
 
 > Opensea
 
